@@ -1,58 +1,47 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import heroImg from './assets/hero.png';
+import { Link } from 'react-router-dom';
+import './App.css'; 
 
 const HomePage = () => {
-  const navigate = useNavigate();
-
-  const cards = [
-    {
-      title: "Secure Login",
-      desc: "Manage your issued certificates and view your profile.",
-      path: "/login",
-      icon: "🔑",
-      color: "#3b82f6"
-    },
-    {
-      title: "New Account",
-      desc: "Join the network to start issuing digital credentials.",
-      path: "/register",
-      icon: "📝",
-      color: "#10b981"
-    },
-    {
-      title: "Public Verification",
-      desc: "No account needed. Check if a certificate is authentic.",
-      path: "/verify",
-      icon: "🛡️",
-      color: "#8b5cf6"
-    }
-  ];
-
   return (
     <div className="home-container">
-      <section className="hero-section">
-        <img src={heroImg} alt="Hero" className="hero-logo" />
-        <h1>Certifier Digital Ledger</h1>
-        <p>The trusted standard for document authenticity.</p>
+      <header>
+        <div className="hero-content">
+          <h1>CertiFier</h1>
+          <p>University of the Assumption's First Automated Certificate Generation and Verification system.</p>
+          
+          <div className="cta-buttons">
+            <Link to="/register">
+              <button>Register</button>
+            </Link>
+            <Link to="/login">
+              <button>Login</button>
+            </Link>
+            <Link to="/verify">
+              <button>Verify</button>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <section className="features-section">
+        <div className="feature-card">
+          <h3>Secure Storage</h3>
+          <p>Keep your certificates safe and accessible anytime, anywhere with high-level encryption.</p>
+        </div>
+        <div className="feature-card">
+          <h3>Easy Verification</h3>
+          <p>Instantly check the authenticity of any document with our verification engine.</p>
+        </div>
+        <div className="feature-card">
+          <h3>Fast Upload</h3>
+          <p>Upload multiple files and manage your records with our intuitive dashboard.</p>
+        </div>
       </section>
 
-      <div className="card-grid">
-        {cards.map((card) => (
-          <div 
-            key={card.title} 
-            className="choice-card" 
-            onClick={() => navigate(card.path)}
-          >
-            <div className="icon-circle" style={{ backgroundColor: card.color }}>
-              {card.icon}
-            </div>
-            <h3>{card.title}</h3>
-            <p>{card.desc}</p>
-            <span className="arrow">→</span>
-          </div>
-        ))}
-      </div>
+      <footer>
+        <p>&copy; 2024 CertiFier Manager. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

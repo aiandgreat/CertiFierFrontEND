@@ -1,0 +1,114 @@
+/* AdminDashboard.css */
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f1f5f9;
+}
+
+.admin-sidebar {
+  width: 260px;
+  background-color: #0f172a; /* Deep Navy */
+  color: white;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.admin-sidebar h2 {
+  color: #38b2ac;
+  margin-bottom: 2rem;
+  font-size: 1.4rem;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 1rem;
+}
+
+.admin-nav {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-nav-link {
+  color: #94a3b8;
+  text-decoration: none;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.admin-nav-link:hover, .admin-nav-link.active {
+  background-color: #1e293b;
+  color: #fff;
+}
+
+.admin-main {
+  flex-grow: 1;
+  padding: 2rem;
+}
+
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #38b2ac;
+}
+
+.admin-stat-card h3 {
+  font-size: 2rem;
+  margin: 0;
+  color: #0f172a;
+}
+
+.admin-stat-card p {
+  color: #64748b;
+  margin: 5px 0 0;
+  font-weight: 500;
+}
+
+.admin-table-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 12px;
+  background: #f8fafc;
+  color: #475569;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.badge.valid { background: #dcfce7; color: #166534; }
+.badge.invalid { background: #fee2e2; color: #991b1b; }

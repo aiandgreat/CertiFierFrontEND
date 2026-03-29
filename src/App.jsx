@@ -1,30 +1,24 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import "./App.css";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Updated paths to match your folder structure (src/pages/...)
-import LoginPage from "./pages/auth/LoginPage";
-import RegisterPage from "./pages/pages/auth/RegisterPage"; // Double check if auth is inside pages
-import Dashboard from "./pages/dashboard/Dashboard";
-import CertificatesPage from "./pages/dashboard/CertificatesPage";
-import UploadPage from "./pages/dashboard/UploadPage";
-import VerifyPage from "./pages/dashboard/VerifyPage";
-
-// HomePage and Navbar
 import HomePage from "./HomePage"; 
-import Navbar from "./pages/components/Navbar"; // Based on your image, components is inside pages
+import LoginPage from "../pages/auth/LoginPage";
+import RegisterPage from "../pages/auth/RegisterPage";
+import VerifyPage from "../pages/dashboard/VerifyPage";
+import AdminDashboard from '../pages/dashboard/AdminDashboard'; 
+import StudentDashboard from '../pages/dashboard/StudentDashboard';
 
 function App() {
   return (
     <Router>
-      <Navbar /> 
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/certificates" element={<CertificatesPage />} />
-        <Route path="/upload" element={<UploadPage />} />
         <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/AdminDashboard" element={<AdminDashboard />} />
+        <Route path="/StudentDashboard" element={<StudentDashboard />} />
+
       </Routes>
     </Router>
   );

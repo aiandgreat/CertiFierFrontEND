@@ -1,70 +1,161 @@
-.home-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 60px 20px;
+/* 1. Reset and Fonts */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: #2d3436;
+  /* Added a subtle gradient to the body to make glass stand out */
+  background: radial-gradient(circle at top right, #e0eafc, #f9f9f9);
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-.hero-section {
+/* 2. Hero Section (Header) */
+header {
+  background: linear-gradient(135deg, #5396ca 0%, #080042 100%);
+  color: white;
+  padding: 120px 20px;
   text-align: center;
-  margin-bottom: 60px;
+  position: relative;
+  overflow: hidden;
+  clip-path: ellipse(150% 100% at 50% 0%);
 }
 
-.hero-logo {
-  width: 120px;
-  margin-bottom: 20px;
+/* Optional: Adding a floating "blob" behind the glass to show off the blur */
+header::before {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  filter: blur(50px);
 }
 
-.card-grid {
+header h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+header p {
+  font-size: 1.25rem;
+  margin-bottom: 2.5rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.9;
+}
+
+/* Button Group */
+header div div {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Glass Buttons */
+button {
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Glass Border */
+}
+
+header button {
+  /* Semi-transparent white */
+  background: rgba(255, 255, 255, 0.2); 
+  color: white;
+  /* The Magic Sparkle */
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+header button:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 3. Features Section - GLASS CARDS */
+section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
-  max-width: 1100px;
-  width: 100%;
+  max-width: 1200px;
+  margin: -60px auto 80px; 
+  padding: 0 20px;
+  position: relative;
+  z-index: 10;
 }
 
-.choice-card {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  padding: 40px;
+section div {
+  /* Transparent Background */
+  background: rgba(255, 255, 255, 0.7); 
+  padding: 40px 30px;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
+  
+  /* Glass Morphism Essentials */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5); 
+  
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.choice-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-  background: #ffffff;
+section div:hover {
+  transform: translateY(-12px);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #1e4d63;
+  box-shadow: 0 15px 45px rgba(108, 92, 231, 0.15);
 }
 
-.icon-circle {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: white;
+section h3 {
+  font-size: 1.5rem;
+  color: #2d3436;
+  margin-bottom: 15px;
 }
 
-.arrow {
-  margin-top: 20px;
-  font-size: 24px;
-  opacity: 0.3;
+section p {
+  color: #636e72;
+  font-size: 1rem;
 }
 
-.choice-card:hover .arrow {
-  opacity: 1;
-  color: #333;
+/* 4. Footer */
+footer {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #2d3436;
+  color: #dfe6e9;
+}
+
+footer p {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 2.5rem;
+  }
+  header {
+    padding: 80px 20px;
+  }
 }
