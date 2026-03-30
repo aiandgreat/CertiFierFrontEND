@@ -1,233 +1,233 @@
-/* School Palette:
-  Blue: #0D1282
-  White: #EEEDED
-  Yellow: #F0DE36
-  Red: #D71313
-*/
-
-/* Container na nagse-center sa card */
+/* Base Layout */
 .auth-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  /* Ginamit ang School Blue Gradient */
-  background: linear-gradient(135deg, #0D1282 0%, #05084d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Soft Gradient para hindi nakakasilaw */
+  background: linear-gradient(135deg, #8f9194 0%, #306fd4 100%); 
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  position: relative;
+  padding: 20px;
+}
+
+.auth-split-wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 1100px;
+  background: #ffffff;
+  border-radius: 20px;
   overflow: hidden;
+  /* Mas pino at malambot na shadow */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+  min-height: 650px;
 }
 
-/* Dekorasyon sa likod - Yellowish Glow */
-.auth-container::before {
-  content: '';
-  position: absolute;
-  width: 450px;
-  height: 450px;
-  background: rgba(240, 222, 54, 0.1);
-  border-radius: 50%;
-  top: -150px;
-  right: -80px;
-  filter: blur(80px);
+/* Left Section - Description Area */
+.auth-info-section {
+  flex: 1.2;
+  background: linear-gradient(135deg, #0D1282 0%, #090c5c 100%); /* School Blue */
+  color: #EEEDED; /* School White */
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 5px solid #F0DE36; /* Yellow Accent Divider */
 }
 
-/* Style para sa Back Button */
+/* Dahil blue ang primary school color, gawin nating blue-themed din ang register side para consistent */
+.auth-info-section.register-theme {
+  background: linear-gradient(135deg, #0D1282 0%, #1e25b3 100%);
+}
+
+.info-content h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  font-weight: 800;
+  color: #F0DE36; /* School Yellow for the Title */
+}
+
+.info-content p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 40px;
+}
+
+.info-graphic {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.info-graphic span {
+  background: rgba(240, 222, 54, 0.2); /* Transparent School Yellow */
+  border: 1px solid #F0DE36; /* Yellow Border */
+  color: #F0DE36;
+  padding: 8px 15px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Right Section - Form Area */
+.auth-form-section {
+  flex: 1;
+  padding: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-header h2 {
+  font-size: 2rem;
+  color: #0D1282; /* School Blue */
+  margin-bottom: 10px;
+}
+
+.auth-header p {
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #0D1282; /* School Blue */
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #EEEDED;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #0D1282; /* School Blue */
+  box-shadow: 0 0 0 3px rgba(13, 18, 130, 0.1);
+}
+
+/* Submit Button */
+.auth-submit {
+  width: 100%;
+  padding: 14px;
+  background: #0D1282; /* School Blue */
+  color: #F0DE36; /* Yellow Text on Blue Button */
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+.auth-submit:hover {
+  background: #090c5c;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(13, 18, 130, 0.3);
+}
+
+.auth-submit:disabled {
+  background: #a3a6d4;
+  cursor: not-allowed;
+}
+
+/* Error Message */
+.error-inline {
+  color: #ffffff;
+  background: #D71313; /* School Red */
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  border-left: 5px solid #000000;
+}
+
+/* Back Button */
 .back-btn {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  background: #EEEDED; 
-  border: none;
-  color: #0D1282; 
-  cursor: pointer;
+  top: 25px;
+  left: 25px;
   padding: 10px 25px;
+  background: #0D1282;
+  color: #F0DE36;
+  border: none;
   border-radius: 50px;
-  font-size: 14px;
-  font-weight: 700;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  z-index: 100; /* Mataas para hindi matabunan */
-  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  z-index: 10;
 }
 
 .back-btn:hover {
   background: #F0DE36;
-  transform: translateX(-5px);
   color: #0D1282;
 }
 
-
-/* Ang Login Card - GLASS MORPHISM */
-.auth-card {
-  background: rgba(238, 237, 237, 0.1); 
-  padding: 40px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(238, 237, 237, 0.2);
-  border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  width: 90%;
-  max-width: 400px;
-  color: #EEEDED;
-  position: relative;
-  z-index: 10;
-}
-
-.auth-header h1 {
-  margin: 0;
-  color: #F0DE36; 
-  font-size: 28px;
-  font-weight: 800;
-  text-align: center;
-}
-
-.auth-header p {
-  color: rgba(238, 237, 237, 0.8);
-  margin-top: 8px;
-  text-align: center;
-}
-.form-group label {
-    color: #ffffff !important; 
-    font-weight: 700;
-}
-
-
-/* Form Styles */
-.auth-form label {
-  display: block;
-  margin-top: 20px;
-  margin-bottom: 8px;
-  font-weight: 600;
-}
-
-.auth-form input {
-  width: 100%;
-  padding: 14px;
-  background: rgba(238, 237, 237, 0.05);
-  border: 1px solid rgba(238, 237, 237, 0.2);
-  border-radius: 12px;
-  color: white;
-  transition: all 0.3s;
-}
-
-.auth-form input:focus {
-  outline: none;
-  border-color: #F0DE36;
-  background: rgba(238, 237, 237, 0.1);
-}
-
-/* Submit Button - School Yellow */
-.auth-submit {
-  width: 100%;
-  padding: 15px;
-  background: #F0DE36; 
-  color: #0D1282; 
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.3s;
+/* Footer Link */
+.auth-footer p {
   margin-top: 25px;
-  text-transform: uppercase;
-}
-
-.auth-submit:hover {
-  background: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(240, 222, 54, 0.4);
-}
-
-.form-row.label{
-  color: #ede4e4;
-}
-
-/* MODAL FIXES */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(5, 8, 77, 0.85); /* Deep Blue Overlay */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999; /* Pinakamataas sa lahat */
-  backdrop-filter: blur(8px);
-}
-
-.modal-content {
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 450px;
-  border-top: 8px solid #F0DE36; /* Yellow Top Accent */
-  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-  color: #0D1282;
-  position: relative;
-}
-
-/* TOASTS */
-.success-toast, .error-toast {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #ffffff;
-  padding: 16px 20px;
-  border-radius: 12px;
-  z-index: 10000; /* Mas mataas pa sa modal */
-  min-width: 300px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: slideInRight 0.4s ease-out;
-}
-
-.success-toast { border-left: 6px solid #10b981; }
-.error-toast { border-left: 6px solid #D71313; } /* School Red */
-
-.error-message-box {
-  color: #ffffff;
-  background: #D71313;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-weight: 600;
   text-align: center;
+  color: #4b5563;
 }
 
-.toast-progress-error {
-  background: #D71313;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 4px;
-  animation: progressFill 4s linear forwards;
+.auth-footer a {
+  color: #D71313; /* School Red for visibility */
+  font-weight: 700;
+  text-decoration: none;
 }
 
-a{
-  color: #F0DE36;
+.auth-footer a:hover {
+  text-decoration: underline;
 }
 
-a:hover{
-  color: #b5a516;
+/* Toast Color Adjustments */
+.success-toast {
+  background-color: #0D1282 !important;
+  color: #F0DE36 !important;
+  border-left: 6px solid #F0DE36;
 }
 
-/* Helpers */
-.form-row { display: flex; gap: 12px; }
-.form-row .form-group { flex: 1; }
-
-
-
-@keyframes slideInRight {
-  from { transform: translateX(110%); }
-  to { transform: translateX(0); }
+.error-toast {
+  background-color: #D71313 !important;
+  color: #ffffff !important;
 }
 
-@keyframes progressFill {
-  from { width: 100%; }
-  to { width: 0%; }
+/* Responsive Layout */
+@media (max-width: 900px) {
+  .auth-split-wrapper {
+    flex-direction: column;
+    width: 95%;
+  }
+  .auth-info-section {
+    padding: 40px;
+    text-align: center;
+    border-right: none;
+    border-bottom: 5px solid #F0DE36;
+  }
+  .info-graphic {
+    justify-content: center;
+  }
+  .auth-form-section {
+    padding: 40px 20px;
+  }
 }
