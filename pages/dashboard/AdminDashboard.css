@@ -440,6 +440,10 @@
   margin-top: 20px;
 }
 
+.edit-input{
+  text-align: center  ;
+}
+
 /* Animation para sa pagpasok ng Toast */
 @keyframes slideInRight {
   from {

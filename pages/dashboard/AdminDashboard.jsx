@@ -16,7 +16,7 @@ const AdminDashboard = () => {
   const [editFormData, setEditFormData] = useState({ full_name: '', course: '' });
   const [editingUser, setEditingUser] = useState(null);
   const [editUserFormData, setEditUserFormData] = useState({ 
-    first_name: '', last_name: '', email: '', username: '', role: '', password: '' 
+    first_name: '', last_name: '', email: '', username: '', role: '' 
   });
 
   // UI States
@@ -62,10 +62,8 @@ const AdminDashboard = () => {
     }
   };
 
-  // Helper para sa Image URLs - FIXED FOR "background" KEY
   const getFullUrl = (path) => {
     if (!path) return "https://via.placeholder.com/200x140?text=No+Image";
-    // Kung ang path ay nagsisimula na sa http (base sa iyong console log), ibalik agad ito.
     if (path.startsWith('http')) return path;
     const cleanPath = path.startsWith('/') ? path.substring(1) : path;
     return `${API_BASE}/${cleanPath}`;
@@ -76,7 +74,6 @@ const AdminDashboard = () => {
     setTimeout(() => setToast({ show: false, message: '' }), 3000);
   };
 
-  // Actions
   const handleSaveEdit = async (id) => {
     try {
       const headers = { Authorization: `Bearer ${token}` };
@@ -90,10 +87,8 @@ const AdminDashboard = () => {
   const handleSaveUserEdit = async (id) => {
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      const dataToSend = { ...editUserFormData };
-      if (!dataToSend.password) delete dataToSend.password;
-
-      await axios.patch(`${API_BASE}/api/users/${id}/`, dataToSend, { headers });
+      // Pinadala ang data na walang password field
+      await axios.patch(`${API_BASE}/api/users/${id}/`, editUserFormData, { headers });
       setEditingUser(null);
       showToast('User updated successfully!');
       fetchData();
@@ -129,7 +124,6 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* SIDEBAR */}
       <aside className="admin-sidebar">
         <h2>CertiFier</h2>
         <nav className="admin-nav">
@@ -147,14 +141,12 @@ const AdminDashboard = () => {
           <p>Manage users, certificates, and system templates.</p>
         </header>
 
-        {/* STATS */}
         <section className="admin-stats-grid">
           <div className="admin-stat-card"><h3>{stats.totalCerts}</h3><p>Certificates Issued</p></div>
           <div className="admin-stat-card"><h3>{stats.totalUsers}</h3><p>Registered Users</p></div>
           <div className="admin-stat-card"><h3>{stats.uploads}</h3><p>Bulk Uploads</p></div>
         </section>
 
-        {/* REGISTERED USERS */}
         <section className="admin-table-container">
           <div className="table-header">
             <h3>Registered Users</h3>
@@ -164,7 +156,7 @@ const AdminDashboard = () => {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>First Name</th><th>Last Name</th><th>Email</th><th>New Password</th><th>Role</th><th>Actions</th>
+                  <th>First Name</th><th>Last Name</th><th>Email</th><th>Role</th><th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -173,18 +165,13 @@ const AdminDashboard = () => {
                     <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.first_name} onChange={e => setEditUserFormData({...editUserFormData, first_name: e.target.value})} /> : user.first_name}</td>
                     <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.last_name} onChange={e => setEditUserFormData({...editUserFormData, last_name: e.target.value})} /> : user.last_name}</td>
                     <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.email} onChange={e => setEditUserFormData({...editUserFormData, email: e.target.value})} /> : user.email}</td>
-                    <td>
-                      {editingUser === user.id ? (
-                        <input type="password" className="edit-input" placeholder="Reset Pass" value={editUserFormData.password} onChange={e => setEditUserFormData({...editUserFormData, password: e.target.value})} />
-                      ) : <span className="masked-pass">••••••••</span>}
-                    </td>
                     <td><span className={`badge ${user.role === 'admin' ? 'invalid' : 'valid'}`}>{user.role?.toUpperCase()}</span></td>
                     <td>
                       <div className="action-buttons">
                         {editingUser === user.id ? (
                           <><button className="save-btn" onClick={() => handleSaveUserEdit(user.id)}>Save</button><button className="cancel-btn" onClick={() => setEditingUser(null)}>Cancel</button></>
                         ) : (
-                          <><button className="edit-btn" onClick={() => { setEditingUser(user.id); setEditUserFormData({ ...user, password: '' }); }}>Edit</button>
+                          <><button className="edit-btn" onClick={() => { setEditingUser(user.id); setEditUserFormData({ first_name: user.first_name, last_name: user.last_name, email: user.email, username: user.username, role: user.role }); }}>Edit</button>
                           {user.role !== 'admin' && <button className="delete-btn" onClick={() => handleDelete(user.id, 'user')}>Delete</button>}</>
                         )}
                       </div>
@@ -196,7 +183,6 @@ const AdminDashboard = () => {
           </div>
         </section>
 
-        {/* ALL TEMPLATES GRID - FIXED: changed background_image to background */}
         <section className="admin-table-container">
           <div className="table-header">
             <h3>System Templates</h3>
@@ -209,7 +195,6 @@ const AdminDashboard = () => {
               {templates.filter(t => t.name.toLowerCase().includes(templateSearch.toLowerCase())).map(template => (
                 <div key={template.id} className="template-card">
                   <div className="template-preview">
-                    {/* PALITAN DITO: template.background_image -> template.background */}
                     <img src={getFullUrl(template.background)} alt={template.name} onError={(e) => e.target.src = "https://via.placeholder.com/200x140?text=Error+Loading"} />
                   </div>
                   <div className="template-info">
@@ -222,7 +207,6 @@ const AdminDashboard = () => {
           )}
         </section>
 
-        {/* RECENT ISSUANCES */}
         <section className="admin-table-container">
           <div className="table-header"><h3>Recent Issuances</h3></div>
           <div className="table-responsive">
@@ -253,7 +237,6 @@ const AdminDashboard = () => {
         </section>
       </main>
 
-      {/* GLOBAL MODAL */}
       {modal.show && (
         <div className="modal-overlay">
           <div className="modal-content">
