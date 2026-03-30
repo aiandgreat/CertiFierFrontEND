@@ -1,174 +1,293 @@
-/* Gamitin ang existing auth background variables mo */
-
+/* 1. BASE CONTAINER - Ang background ng buong page */
 .auth-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: 
-  radial-gradient(at 0% 0%, rgba(13, 18, 130, 0.3) 0px, transparent 50%), 
-  radial-gradient(at 100% 0%, rgba(240, 222, 54, 0.05) 0px, transparent 40%),
-  radial-gradient(at 100% 100%, rgba(215, 19, 19, 0.05) 0px, transparent 50%),
-  #050724; /* Napakadilim na Blue base para hindi masakit sa mata */
-  padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: 
+        radial-gradient(at 0% 0%, rgba(13, 18, 130, 0.3) 0px, transparent 50%), 
+        radial-gradient(at 100% 0%, rgba(240, 222, 54, 0.05) 0px, transparent 40%),
+        radial-gradient(at 100% 100%, rgba(215, 19, 19, 0.05) 0px, transparent 50%),
+        #050724;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* 2. MAIN WRAPPER - Ang glass card */
 .auth-split-wrapper.glass-effect {
-  display: flex;
-  width: 100%;
-  max-width: 1100px;
-  min-height: 600px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(15px);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+    display: flex;
+    width: 100%;
+    max-width: 1100px;
+    min-height: 600px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* LEFT SIDE */
+/* 3. LEFT SIDE - Dito ang Input at Form */
 .verify-left {
-  flex: 1;
-  background: linear-gradient(135deg, #0D1282 0%, #090c5c 100%);
-  color: white;
-  padding: 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-right: 5px solid #F0DE36;
+    flex: 1;
+    background: linear-gradient(135deg, #0D1282 0%, #090c5c 100%);
+    color: white;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 5px solid #F0DE36;
+    position: relative;
+    z-index: 10; /* Sinisiguradong nasa ibabaw */
+    pointer-events: auto !important; /* Pinaka-importante para makapag-click/type */
 }
 
 .verify-left h1 {
-  color: #F0DE36;
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin-bottom: 20px;
+    color: #F0DE36;
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.1;
 }
 
+.verify-left p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+/* 4. FORM & INPUT STYLING */
 .verify-form-inline {
-  margin-top: 30px;
+    margin-top: 30px;
+    width: 100%;
 }
 
 .verify-input {
-  width: 100%;
-  padding: 15px;
-  border-radius: 10px;
-  border: none;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(240, 222, 54, 0.3);
-  color: white;
-  font-size: 1.1rem;
-  margin-bottom: 15px;
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 12px;
+    /* Gawin nating puti o light gray ang background para kitang-kita ang black text */
+    background: rgba(255, 255, 255, 0.9); 
+    border: 2px solid rgba(13, 18, 130, 0.1);
+    
+    /* DITO MO PALITAN: Gawing Black ang text */
+    color: #000000; 
+    
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    cursor: text;
+}
+
+.verify-input:focus {
+    /* Kapag naka-click ang user, gawin nating solid white para malinis */
+    background: #ffffff;
+    border-color: #0D1282; /* Blue border instead of yellow para professional tingnan sa puti */
+    box-shadow: 0 0 15px rgba(13, 18, 130, 0.1);
+    color: #000000;
 }
 
 .verify-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+    /* Ang placeholder ay pwedeng gray para alam nilang input ito */
+    color: #888888;
 }
 
 .verify-btn {
-  background: #F0DE36 !important;
-  color: #0D1282 !important;
+    width: 100%;
+    padding: 16px;
+    background: #F0DE36 !important;
+    color: #0D1282 !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
 }
 
-/* RIGHT SIDE */
+.verify-btn:hover {
+    background: #e6d42e !important;
+    transform: translateY(-2px);
+}
+
+.verify-btn:active {
+    transform: translateY(0);
+}
+
+.verify-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* 5. RIGHT SIDE - Dito ang Results */
 .verify-right {
-  flex: 1.2;
-  padding: 50px;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    flex: 1.2;
+    padding: 50px;
+    background: #f8f9fa; /* Solid light background para malinis tingnan ang results */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
 .empty-state {
-  text-align: center;
-  color: #0D1282;
-  opacity: 0.6;
+    text-align: center;
+    color: #0D1282;
 }
 
 .search-icon-placeholder {
-  font-size: 4rem;
-  margin-bottom: 10px;
+    font-size: 5rem;
+    margin-bottom: 15px;
+    display: block;
+    opacity: 0.3;
 }
 
-/* Result Boxes */
+.empty-state p {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+.empty-state span {
+    font-size: 0.95rem;
+    opacity: 0.6;
+}
+
+/* 6. RESULT BOXES (VALID & INVALID) */
 .result-box {
-  width: 100%;
-  padding: 30px;
-  border-radius: 15px;
-  animation: fadeIn 0.5s ease;
+    width: 100%;
+    max-width: 480px;
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.5s ease-out;
 }
 
 .result-box.valid {
-  background: white;
-  border-left: 10px solid #0D1282;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border-left: 10px solid #0D1282;
 }
 
 .status-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 25px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 15px;
 }
 
 .status-header h3 {
-  color: #0D1282;
-  font-size: 1.5rem;
+    color: #0D1282;
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.status-icon {
+    font-size: 1.8rem;
 }
 
 .cert-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
 }
 
 .grid-item span {
-  font-size: 0.75rem;
-  color: #666;
-  text-transform: uppercase;
-  font-weight: 700;
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 5px;
 }
 
 .grid-item p {
-  color: #0D1282;
-  font-weight: 600;
-  font-size: 1.1rem;
+    color: #0D1282;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0;
 }
 
 .result-box.invalid {
-  background: #fffafa;
-  border: 1px solid #D71313;
-  display: flex;
-  align-items: center;
-  gap: 20px;
+    background: #fffafa;
+    border: 2px solid #D71313;
+    text-align: center;
+}
+
+.result-box.invalid .status-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
 }
 
 .result-box.invalid h3 {
-  color: #D71313;
+    color: #D71313;
+    margin-bottom: 10px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* 7. UTILITY & NAVIGATION */
+.back-btn {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 100;
+    transition: 0.3s;
 }
 
-@media (max-width: 900px) {
-  .auth-split-wrapper {
-    flex-direction: column;
-  }
+.back-btn:hover {
+    background: #F0DE36;
+    color: #0D1282;
+}
 
-  .verify-left {
-    padding: 40px;
-    border-right: none;
-    border-bottom: 5px solid #F0DE36;
-  }
+/* 8. ANIMATIONS */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 9. RESPONSIVE DESIGN */
+@media (max-width: 950px) {
+    .auth-split-wrapper.glass-effect {
+        flex-direction: column;
+        max-width: 500px;
+        min-height: auto;
+    }
+
+    .verify-left {
+        padding: 40px;
+        border-right: none;
+        border-bottom: 6px solid #F0DE36;
+    }
+
+    .verify-left h1 {
+        font-size: 2.2rem;
+    }
+
+    .verify-right {
+        padding: 40px 20px;
+    }
+
+    .cert-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
 }
