@@ -1,40 +1,49 @@
-/* Base Layout */
+/* COLORS:
+   Blue: #0D1282 | Yellow: #F0DE36 | White: #EEEDED
+   Red: #D71313 | Success Green: #22c55e
+*/
+
+/* 1. Base Container */
 .auth-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Soft Gradient para hindi nakakasilaw */
-  background: linear-gradient(135deg, #8f9194 0%, #306fd4 100%); 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Dark Gradient Background para hindi masakit sa mata */
+  background: 
+    radial-gradient(at 0% 0%, rgba(13, 18, 130, 0.3) 0px, transparent 50%), 
+    radial-gradient(at 100% 0%, rgba(240, 222, 54, 0.05) 0px, transparent 40%),
+    radial-gradient(at 100% 100%, rgba(215, 19, 19, 0.05) 0px, transparent 50%),
+    #050724; 
+  font-family: 'Inter', 'Segoe UI', sans-serif;
   padding: 20px;
+  position: relative;
 }
 
+/* 2. Main White Modal Wrapper */
 .auth-split-wrapper {
   display: flex;
   width: 100%;
   max-width: 1100px;
-  background: #ffffff;
-  border-radius: 20px;
+  min-height: 650px; 
+  background: #ffffff; /* Solid White Modal */
+  border-radius: 24px;
   overflow: hidden;
-  /* Mas pino at malambot na shadow */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
-  min-height: 650px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
 }
 
-/* Left Section - Description Area */
+/* 3. Left Section (Blue Panel) */
 .auth-info-section {
-  flex: 1.2;
-  background: linear-gradient(135deg, #0D1282 0%, #090c5c 100%); /* School Blue */
-  color: #EEEDED; /* School White */
+  flex: 1;
+  background: linear-gradient(135deg, #0D1282 0%, #090c5c 100%);
+  color: #EEEDED;
   padding: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-right: 5px solid #F0DE36; /* Yellow Accent Divider */
+  border-right: 5px solid #F0DE36;
 }
 
-/* Dahil blue ang primary school color, gawin nating blue-themed din ang register side para consistent */
 .auth-info-section.register-theme {
   background: linear-gradient(135deg, #0D1282 0%, #1e25b3 100%);
 }
@@ -43,36 +52,36 @@
   font-size: 3rem;
   margin-bottom: 20px;
   font-weight: 800;
-  color: #F0DE36; /* School Yellow for the Title */
+  color: #F0DE36;
 }
 
 .info-content p {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   line-height: 1.6;
   opacity: 0.9;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .info-graphic {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
 .info-graphic span {
-  background: rgba(240, 222, 54, 0.2); /* Transparent School Yellow */
-  border: 1px solid #F0DE36; /* Yellow Border */
+  background: rgba(240, 222, 54, 0.1);
+  border: 1px solid rgba(240, 222, 54, 0.4);
   color: #F0DE36;
-  padding: 8px 15px;
+  padding: 6px 14px;
   border-radius: 50px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
-/* Right Section - Form Area */
+/* 4. Right Section (Form Panel) */
 .auth-form-section {
   flex: 1;
-  padding: 50px;
+  padding: 40px 60px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,96 +90,92 @@
 
 .auth-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
 }
 
 .auth-header h2 {
   font-size: 2rem;
-  color: #0D1282; /* School Blue */
-  margin-bottom: 10px;
+  color: #0D1282;
+  margin-bottom: 8px;
+  font-weight: 800;
 }
 
 .auth-header p {
   color: #6b7280;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
+  font-size: 0.95rem;
 }
 
-/* Form Elements */
-.form-group {
-  margin-bottom: 20px;
+/* 5. Inputs & Forms */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
 }
 
 .form-group label {
   display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #0D1282; /* School Blue */
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #0D1282;
+  text-transform: uppercase;
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px 15px;
-  border: 2px solid #EEEDED;
-  border-radius: 8px;
+  padding: 12px 16px;
+  border: 2px solid #f3f4f6;
+  border-radius: 12px;
   font-size: 1rem;
+  background: #f9fafb;
   transition: all 0.3s;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #0D1282; /* School Blue */
-  box-shadow: 0 0 0 3px rgba(13, 18, 130, 0.1);
+  border-color: #0D1282;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(13, 18, 130, 0.05);
 }
 
-/* Submit Button */
+/* 6. Buttons & Links */
 .auth-submit {
   width: 100%;
   padding: 14px;
-  background: #0D1282; /* School Blue */
-  color: #F0DE36; /* Yellow Text on Blue Button */
+  background: #0D1282;
+  color: #F0DE36;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-weight: 700;
   font-size: 1rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: 0.3s;
   margin-top: 10px;
 }
 
 .auth-submit:hover {
-  background: #090c5c;
+  background: #050833;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(13, 18, 130, 0.3);
+  box-shadow: 0 10px 20px rgba(13, 18, 130, 0.2);
 }
 
-.auth-submit:disabled {
-  background: #a3a6d4;
-  cursor: not-allowed;
-}
-
-/* Error Message */
-.error-inline {
-  color: #ffffff;
-  background: #D71313; /* School Red */
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  margin-bottom: 20px;
-  border-left: 5px solid #000000;
-}
-
-/* Back Button */
 .back-btn {
   position: absolute;
-  top: 25px;
-  left: 25px;
+  top: 30px;
+  left: 30px;
   padding: 10px 25px;
-  background: #0D1282;
-  color: #F0DE36;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
@@ -183,51 +188,105 @@
   color: #0D1282;
 }
 
-/* Footer Link */
 .auth-footer p {
   margin-top: 25px;
   text-align: center;
-  color: #4b5563;
+  font-size: 0.9rem;
+  color: #6b7280;
 }
 
 .auth-footer a {
-  color: #D71313; /* School Red for visibility */
+  color: #D71313;
   font-weight: 700;
   text-decoration: none;
 }
 
-.auth-footer a:hover {
-  text-decoration: underline;
+/* 7. TOAST MESSAGES (WHITE MODAL STYLE) */
+
+/* Common Toast Styles */
+.success-toast, .error-toast {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  background: #ffffff !important; /* Force White Background */
+  min-width: 320px;
+  padding: 18px 25px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Toast Color Adjustments */
+/* Success Specific (Green) */
 .success-toast {
-  background-color: #0D1282 !important;
-  color: #F0DE36 !important;
-  border-left: 6px solid #F0DE36;
+  border-left: 8px solid #22c55e;
 }
+.success-toast strong { color: #22c55e; font-size: 1.1rem; }
 
+/* Error Specific (Red) */
 .error-toast {
-  background-color: #D71313 !important;
-  color: #ffffff !important;
+  border-left: 8px solid #D71313;
+}
+.error-toast strong { color: #D71313; font-size: 1.1rem; }
+
+/* Toast Text */
+.toast-text p {
+  color: #4b5563;
+  margin: 4px 0 0 0;
+  font-size: 0.9rem;
 }
 
-/* Responsive Layout */
+/* Progress Bars */
+.toast-progress, .toast-progress-error {
+  position: absolute;
+  bottom: 0;
+  left: 8px;
+  height: 4px;
+  width: calc(100% - 8px);
+  background: #f3f4f6;
+  border-bottom-right-radius: 16px;
+  overflow: hidden;
+}
+
+.toast-progress::after {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; height: 100%; width: 100%;
+  background: #22c55e;
+  animation: progressAnim 3s linear forwards;
+}
+
+.toast-progress-error::after {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; height: 100%; width: 100%;
+  background: #D71313;
+  animation: progressAnim 3s linear forwards;
+}
+
+/* 8. Animations & Media Queries */
+@keyframes progressAnim {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
 @media (max-width: 900px) {
   .auth-split-wrapper {
     flex-direction: column;
-    width: 95%;
+    min-height: auto;
   }
   .auth-info-section {
     padding: 40px;
-    text-align: center;
     border-right: none;
     border-bottom: 5px solid #F0DE36;
+    text-align: center;
   }
-  .info-graphic {
-    justify-content: center;
-  }
-  .auth-form-section {
-    padding: 40px 20px;
-  }
+  .auth-form-section { padding: 40px 20px; }
 }

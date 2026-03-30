@@ -24,6 +24,7 @@ const UploadTemplatePage = () => {
   const [message, setMessage] = useState({ type: '', text: '' });
   const [markers, setMarkers] = useState([]);
   const [previewUrl, setPreviewUrl] = useState('');
+  const [previewOrientation, setPreviewOrientation] = useState('landscape');
   const [activePlaceholderKey, setActivePlaceholderKey] = useState('full_name');
   const [draggingMarkerId, setDraggingMarkerId] = useState(null);
   const [placeholderStyles, setPlaceholderStyles] = useState(() => {
@@ -34,6 +35,7 @@ const UploadTemplatePage = () => {
   });
 
   const fileInputRef = useRef(null);
+  const previewImageRef = useRef(null);
   const suppressNextImageClickRef = useRef(false);
 
   useEffect(() => {
@@ -52,6 +54,7 @@ const UploadTemplatePage = () => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
+      setPreviewOrientation('landscape');
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
@@ -60,9 +63,38 @@ const UploadTemplatePage = () => {
     }
   };
 
+  const handlePreviewLoad = (e) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget;
+    if (!naturalWidth || !naturalHeight) return;
+    setPreviewOrientation(naturalHeight > naturalWidth ? 'portrait' : 'landscape');
+    setMarkers((prev) => prev.map((marker) => {
+      const previewFontSize = marker.previewFontSize ?? marker.fontSize;
+      return {
+        ...marker,
+        previewFontSize,
+        fontSize: toOutputFontSize(previewFontSize)
+      };
+    }));
+  };
+
+  const getFontScaleFactor = () => {
+    const imageEl = previewImageRef.current;
+    if (!imageEl || !imageEl.clientWidth || !imageEl.naturalWidth) {
+      return 1;
+    }
+    return imageEl.naturalWidth / imageEl.clientWidth;
+  };
+
+  const toOutputFontSize = (previewFontSize) => {
+    const scaled = previewFontSize * getFontScaleFactor();
+    return Number(scaled.toFixed(2));
+  };
+
   const addOrUpdateMarker = (key, xPct = 50, yPct = 50) => {
     const placeholder = getPlaceholderMeta(key);
     const style = placeholderStyles[key] || DEFAULT_MARKER_STYLE;
+    const previewFontSize = style.fontSize;
+    const outputFontSize = toOutputFontSize(previewFontSize);
     setMarkers((prev) => {
       const existing = prev.find((marker) => marker.key === placeholder.key);
       const nextMarker = {
@@ -71,7 +103,8 @@ const UploadTemplatePage = () => {
         label: placeholder.label,
         xPct: Number(xPct.toFixed(2)),
         yPct: Number(yPct.toFixed(2)),
-        fontSize: style.fontSize,
+        fontSize: outputFontSize,
+        previewFontSize,
         color: style.color,
         align: style.align
       };
@@ -87,9 +120,12 @@ const UploadTemplatePage = () => {
       suppressNextImageClickRef.current = false;
       return;
     }
-    const rect = e.currentTarget.getBoundingClientRect();
-    const xPct = ((e.clientX - rect.left) / rect.width) * 100;
-    const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+    const imageRect = previewImageRef.current.getBoundingClientRect();
+    if (e.clientX < imageRect.left || e.clientX > imageRect.right || e.clientY < imageRect.top || e.clientY > imageRect.bottom) {
+      return;
+    }
+    const xPct = ((e.clientX - imageRect.left) / imageRect.width) * 100;
+    const yPct = ((e.clientY - imageRect.top) / imageRect.height) * 100;
     addOrUpdateMarker(activePlaceholderKey, xPct, yPct);
   };
 
@@ -102,9 +138,9 @@ const UploadTemplatePage = () => {
 
   const handleCanvasPointerMove = (e) => {
     if (!draggingMarkerId) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const xPct = ((e.clientX - rect.left) / rect.width) * 100;
-    const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+    const imageRect = previewImageRef.current.getBoundingClientRect();
+    const xPct = ((e.clientX - imageRect.left) / imageRect.width) * 100;
+    const yPct = ((e.clientY - imageRect.top) / imageRect.height) * 100;
     const clampedXPct = Math.max(0, Math.min(100, xPct));
     const clampedYPct = Math.max(0, Math.min(100, yPct));
     setMarkers((prev) => prev.map((marker) => {
@@ -134,7 +170,12 @@ const UploadTemplatePage = () => {
       const nextStyles = { ...prev, [activePlaceholderKey]: nextStyle };
       setMarkers((currentMarkers) => currentMarkers.map((marker) => {
         if (marker.key !== activePlaceholderKey) return marker;
-        return { ...marker, ...nextStyle };
+        return {
+          ...marker,
+          ...nextStyle,
+          previewFontSize: nextStyle.fontSize,
+          fontSize: toOutputFontSize(nextStyle.fontSize)
+        };
       }));
       return nextStyles;
     });
@@ -151,7 +192,8 @@ const UploadTemplatePage = () => {
     const formData = new FormData();
     formData.append('name', templateName);
     formData.append('background', file);
-    formData.append('placeholders', JSON.stringify({ version: 1, markers }));
+    const payloadMarkers = markers.map(({ previewFontSize, ...marker }) => marker);
+    formData.append('placeholders', JSON.stringify({ version: 1, markers: payloadMarkers }));
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post('http://127.0.0.1:8000/api/templates/', formData, {
@@ -181,6 +223,9 @@ const UploadTemplatePage = () => {
       setTimeout(() => setMessage({ type: '', text: '' }), 5000);
     }
   };
+
+  const activePreviewFontSize = placeholderStyles[activePlaceholderKey]?.fontSize || 24;
+  const activeOutputFontSize = toOutputFontSize(activePreviewFontSize);
 
   return (
     <div className="upload-page-container">
@@ -253,10 +298,10 @@ const UploadTemplatePage = () => {
                     type="range"
                     min="12"
                     max="120"
-                    value={placeholderStyles[activePlaceholderKey]?.fontSize || 24}
+                    value={activePreviewFontSize}
                     onChange={(e) => handleStyleChange('fontSize', Number(e.target.value))}
                   />
-                  <span>{placeholderStyles[activePlaceholderKey]?.fontSize || 24}px</span>
+                  <span>{activePreviewFontSize}px (export: ~{activeOutputFontSize}px)</span>
                 </label>
                 <label>
                   Color
@@ -279,32 +324,37 @@ const UploadTemplatePage = () => {
                 </label>
               </div>
               <div
-                className="template-preview"
+                className={`template-preview ${previewOrientation}`}
                 onClick={onImageClick}
                 onPointerMove={handleCanvasPointerMove}
                 onPointerUp={handleCanvasPointerUp}
                 onPointerCancel={handleCanvasPointerUp}
                 onPointerLeave={handleCanvasPointerUp}
               >
-                <img src={previewUrl} alt="Template preview" draggable={false} />
-                {markers.map((marker) => (
-                  <button
-                    key={marker.id}
-                    type="button"
-                    className="template-marker"
-                    style={{
-                      left: `${marker.xPct}%`,
-                      top: `${marker.yPct}%`,
-                      fontSize: `${marker.fontSize}px`,
-                      color: marker.color,
-                      textAlign: marker.align,
-                      justifyContent: marker.align === 'left' ? 'flex-start' : marker.align === 'right' ? 'flex-end' : 'center'
-                    }}
-                    onPointerDown={(e) => handleMarkerPointerDown(e, marker.id)}
-                  >
-                    {`{{${marker.key}}}`}
-                  </button>
-                ))}
+                <img ref={previewImageRef} src={previewUrl} alt="Template preview" draggable={false} onLoad={handlePreviewLoad} />
+                {markers.map((marker) => {
+                  const horizontalTransform = marker.align === 'center' ? 'translate(-50%, -50%)' : marker.align === 'left' ? 'translate(0, -50%)' : 'translate(-100%, -50%)';
+                  const justifyContent = marker.align === 'center' ? 'center' : marker.align === 'left' ? 'flex-start' : 'flex-end';
+                  return (
+                    <button
+                      key={marker.id}
+                      type="button"
+                      className="template-marker"
+                      style={{
+                        left: `${marker.xPct}%`,
+                        top: `${marker.yPct}%`,
+                        transform: horizontalTransform,
+                        fontSize: `${marker.previewFontSize ?? marker.fontSize}px`,
+                        color: marker.color,
+                        textAlign: marker.align,
+                        justifyContent: justifyContent
+                      }}
+                      onPointerDown={(e) => handleMarkerPointerDown(e, marker.id)}
+                    >
+                      {`{{${marker.key}}}`}
+                    </button>
+                  );
+                })}
               </div>
               <div className="marker-list">
                 {markers.length === 0 ? (
@@ -313,7 +363,7 @@ const UploadTemplatePage = () => {
                   markers.map((marker) => (
                     <div key={marker.id} className="marker-row">
                       <span>{marker.label}</span>
-                      <span>{marker.xPct}%, {marker.yPct}%</span>
+                      <span>{marker.xPct}%, {marker.yPct}% | {marker.previewFontSize ?? marker.fontSize}px</span>
                       <button type="button" onClick={() => removeMarker(marker.id)}>Remove</button>
                     </div>
                   ))

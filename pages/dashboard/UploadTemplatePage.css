@@ -134,17 +134,31 @@ html, body {
   margin-bottom: 12px;
 }
 
-.template-preview {
+.upload-card .template-preview {
   position: relative;
   width: 100%;
+  height: auto;
   border: 2px solid #0D1282;
   border-radius: 12px;
   background: #f1f2f6;
   overflow: hidden;
 }
 
-.template-preview img {
+.upload-card .template-preview.landscape {
+  max-width: 100%;
+  margin: 0;
+}
+
+.upload-card .template-preview.portrait {
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.upload-card .template-preview img {
   width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
   display: block;
 }
 
@@ -220,6 +234,16 @@ html, body {
   background: #F0DE36;
   color: #0D1282;
   transform: translateX(-5px);
+}
+
+@media (max-width: 768px) {
+  .marker-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-card .template-preview.portrait {
+    max-width: 100%;
+  }
 }
 
 @keyframes fadeIn {

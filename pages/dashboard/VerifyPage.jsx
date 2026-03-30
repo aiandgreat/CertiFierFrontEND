@@ -41,58 +41,81 @@ const VerifyPage = () => {
     };
 
     return (
-        <div className="glass-body">
-            {/* Background shapes for the glass effect */}
-            <div className="bg-shape circle-1"></div>
-            <div className="bg-shape circle-2"></div>
+        <div className="auth-container">
+            <button className="back-btn" onClick={() => navigate(-1)}>Back</button>
 
-            <div className="glass-container">
-                <button className="back-btn" onClick={() => navigate(-1)}>
-                    Back
-                </button>
-
-                <div className="verify-card">
-                    <h1>Certificate Verification</h1>
-                    <p className="subtitle">Enter your ID to authenticate official credentials</p>
-
-                    <form onSubmit={handleVerify} className="verify-form">
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                placeholder="e.g. CERT-2024-001"
-                                value={certId}
-                                onChange={(e) => setCertId(e.target.value)}
-                            />
-                            <button type="submit" className="verify-submit-btn" disabled={loading}>
+            <div className="auth-split-wrapper glass-effect">
+                {/* LEFT SIDE: Input & Title */}
+                <div className="auth-info-section verify-left">
+                    <div className="info-content">
+                        <h1>Certificate Verification</h1>
+                        <p>Authenticate official credentials by entering the unique Certificate ID below.</p>
+                        
+                        <form onSubmit={handleVerify} className="verify-form-inline">
+                            <div className="form-group">
+                                <input
+                                    type="text"
+                                    className="verify-input"
+                                    placeholder="e.g. CERT-2024-001"
+                                    value={certId}
+                                    onChange={(e) => setCertId(e.target.value)}
+                                />
+                            </div>
+                            <button type="submit" className="auth-submit verify-btn" disabled={loading}>
                                 {loading ? 'Checking...' : 'Verify Now'}
                             </button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+                </div>
 
-                    {error && (
-                        <div className="result-box invalid">
-                            <div className="status-icon">⚠️</div>
-                            <div>
-                                <h3>Verification Failed</h3>
-                                <p>{error}</p>
+                {/* RIGHT SIDE: Results Display */}
+                <div className="auth-form-section verify-right">
+                    <div className="auth-card">
+                        {!result && !error && (
+                            <div className="empty-state">
+                                <div className="search-icon-placeholder">🔍</div>
+                                <p>Waiting for verification...</p>
+                                <span>Results will appear here once verified.</span>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    {result && result.status === 'VALID' && (
-                        <div className="result-box valid">
-                            <div className="status-icon">✅</div>
-                            <div className="cert-info">
-                                <h3>Verified Successfully</h3>
-                                <div className="cert-grid">
-                                    <div className="grid-item"><span>Name</span><p>{result.full_name}</p></div>
-                                    <div className="grid-item"><span>Course</span><p>{result.course}</p></div>
-                                    <div className="grid-item"><span>Issued By</span><p>{result.issued_by}</p></div>
-                                    <div className="grid-item"><span>Date</span><p>{result.date_issued}</p></div>
+                        {error && (
+                            <div className="result-box invalid">
+                                <div className="status-icon">⚠️</div>
+                                <div className="cert-info">
+                                    <h3>Verification Failed</h3>
+                                    <p>{error}</p>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+
+                        {result && result.status === 'VALID' && (
+                            <div className="result-box valid">
+                                <div className="status-header">
+                                    <span className="status-icon">✅</span>
+                                    <h3>Verified Successfully</h3>
+                                </div>
+                                <div className="cert-grid">
+                                    <div className="grid-item">
+                                        <span>Full Name</span>
+                                        <p>{result.full_name}</p>
+                                    </div>
+                                    <div className="grid-item">
+                                        <span>Course/Event</span>
+                                        <p>{result.course}</p>
+                                    </div>
+                                    <div className="grid-item">
+                                        <span>Issued By</span>
+                                        <p>{result.issued_by}</p>
+                                    </div>
+                                    <div className="grid-item">
+                                        <span>Date Issued</span>
+                                        <p>{result.date_issued}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
