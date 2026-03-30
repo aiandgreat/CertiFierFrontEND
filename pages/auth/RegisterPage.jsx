@@ -74,7 +74,7 @@ const RegisterPage = () => {
         </div>
       )}
 
-      <button className="back-btn" onClick={() => navigate(-1)}>Back</button>
+      <button className="back-btn" onClick={() => navigate('/HomePage')}>Back</button>
 
       <div className="auth-card">
         <div className="auth-header">

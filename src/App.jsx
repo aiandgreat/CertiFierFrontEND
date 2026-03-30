@@ -22,6 +22,7 @@ function App() {
         <Route path="/StudentDashboard" element={<StudentDashboard />} />
         <Route path="/UploadTemplate" element={<UploadTemplatePage />} />
         <Route path="/CSVUpload" element={<CSVUploadPage />} />
+        <Route path="*" element={<HomePage />} />
 
       </Routes>
     </Router>

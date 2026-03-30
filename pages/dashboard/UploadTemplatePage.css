@@ -1,14 +1,22 @@
-/* UploadTemplate.css */
-/* School Palette: Blue #0D1282 | White #EEEDED | Yellow #F0DE36 | Red #D71313 */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: auto;
+  min-height: 100%;
+  overflow-y: auto;
+}
 
 .upload-page-container {
   min-height: 100vh;
+  height: auto;
   display: flex;
   justify-content: center;
-  align-items: center;
-  /* Darker gradient version ng school blue para mag-pop yung card */
+  align-items: flex-start;
   background: radial-gradient(circle at center, #0D1282 0%, #05084d 100%);
-  padding: 20px;
+  background-attachment: fixed;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  overflow-y: visible;
 }
 
 .upload-card {
@@ -18,9 +26,10 @@
   padding: 40px;
   border-radius: 24px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-  /* Yellow Accent Line sa taas */
   border-top: 10px solid #F0DE36;
   animation: fadeIn 0.5s ease-out;
+  margin-top: 20px;
+  margin-bottom: 50px;
 }
 
 .upload-header h1 {
@@ -36,7 +45,6 @@
   margin-bottom: 30px;
 }
 
-/* Drop Zone Area */
 .drop-zone {
   border: 2px dashed #0D1282;
   background: rgba(13, 18, 130, 0.02);
@@ -49,7 +57,7 @@
 }
 
 .drop-zone:hover {
-  background: rgba(240, 222, 54, 0.1); /* Yellow tint on hover */
+  background: rgba(240, 222, 54, 0.1);
   border-color: #F0DE36;
 }
 
@@ -59,13 +67,6 @@
   display: block;
 }
 
-.file-name {
-  color: #0D1282;
-  font-weight: 700;
-  word-break: break-all;
-}
-
-/* Input Fields */
 .form-group label {
   display: block;
   text-align: left;
@@ -82,23 +83,10 @@
   border-radius: 12px;
   margin-bottom: 20px;
   font-size: 1rem;
-  transition: border-color 0.3s;
-}
-
-.form-group input[type="text"]:focus {
-  outline: none;
-  border-color: #0D1282;
-}
-
-/* Actions */
-.upload-actions {
-  display: flex;
-  gap: 15px;
-  margin-top: 10px;
 }
 
 .btn-primary {
-  flex: 2;
+  width: 100%;
   background: #0D1282;
   color: #F0DE36;
   border: none;
@@ -107,33 +95,8 @@
   font-weight: 800;
   cursor: pointer;
   text-transform: uppercase;
-  transition: 0.3s;
 }
 
-.btn-primary:hover {
-  background: #05084d;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(13, 18, 130, 0.3);
-}
-
-.btn-secondary {
-  flex: 1;
-  background: #EEEDED;
-  color: #D71313; /* Red for Reset/Cancel */
-  border: none;
-  padding: 15px;
-  border-radius: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.btn-secondary:hover {
-  background: #dfe6e9;
-  color: #b33939;
-}
-
-/* Template marker editor */
 .template-editor {
   margin-bottom: 24px;
   border: 1px solid #dfe6e9;
@@ -157,7 +120,6 @@
   font-size: 0.8rem;
   font-weight: 700;
   padding: 7px 12px;
-  cursor: pointer;
 }
 
 .tool-chip.active {
@@ -165,118 +127,99 @@
   color: #F0DE36;
 }
 
-.editor-hint {
-  margin: 0 0 10px;
-  color: #2d3436;
-  font-size: 0.85rem;
-}
-
 .marker-controls {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-bottom: 12px;
 }
 
-.marker-controls label {
-  display: grid;
-  gap: 4px;
-  font-size: 0.78rem;
-  color: #0D1282;
-  font-weight: 700;
-}
-
-.marker-controls input[type="range"],
-.marker-controls select,
-.marker-controls input[type="color"] {
-  width: 100%;
-}
-
-/* Main preview canvas size control */
 .template-preview {
   position: relative;
   width: 100%;
-  max-height: 420px;
   border: 2px solid #0D1282;
   border-radius: 12px;
-  overflow: auto;
   background: #f1f2f6;
-  cursor: crosshair;
-  user-select: none;
-  touch-action: none;
+  overflow: hidden;
 }
 
 .template-preview img {
   width: 100%;
-  max-height: 420px;
-  object-fit: contain;
   display: block;
-  pointer-events: none;
 }
 
 .template-marker {
   position: absolute;
-  display: inline-flex;
-  min-width: 120px;
   transform: translate(-50%, -50%);
-  border: none;
-  padding: 2px 8px;
   background: rgba(255, 255, 255, 0.85);
+  padding: 2px 8px;
   border-radius: 8px;
   font-weight: 800;
-  line-height: 1.1;
   cursor: grab;
+  border: none;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  touch-action: none;
 }
 
 .marker-list {
   margin-top: 12px;
-  display: grid;
-  gap: 6px;
 }
 
 .marker-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
   font-size: 0.82rem;
   background: #ffffff;
   border: 1px solid #dfe6e9;
   border-radius: 8px;
   padding: 6px 8px;
+  margin-bottom: 5px;
 }
 
 .marker-row button {
-  border: none;
   background: #D71313;
   color: #ffffff;
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 0.75rem;
-  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 6px;
 }
 
-@media (max-width: 600px) {
-  .upload-card {
-    padding: 26px 18px;
-  }
+/* I-update ang container para maging relative position */
+.upload-page-container {
+  position: relative; /* Mahalaga ito para sa positioning ng back button */
+  min-height: 100vh;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: radial-gradient(circle at center, #0D1282 0%, #05084d 100%);
+  background-attachment: fixed;
+  padding: 80px 20px 40px; /* Tinaasan ang top padding para sa back button */
+  box-sizing: border-box;
+  overflow-y: visible;
+}
 
-  .template-preview,
-  .template-preview img {
-    max-height: 300px;
-  }
+/* Back Button Style */
+.back-btn {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(240, 222, 54, 0.5);
+  color: #F0DE36;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  z-index: 10;
+}
 
-  .marker-controls {
-    grid-template-columns: 1fr;
-  }
-
-  .marker-row {
-    grid-template-columns: 1fr;
-    gap: 5px;
-  }
+.back-btn:hover {
+  background: #F0DE36;
+  color: #0D1282;
+  transform: translateX(-5px);
 }
 
 @keyframes fadeIn {

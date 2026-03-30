@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Idinagdag ito
 import axios from 'axios';
 import './UploadTemplatePage.css';
 
@@ -16,6 +17,7 @@ const DEFAULT_MARKER_STYLE = {
 };
 
 const UploadTemplatePage = () => {
+  const navigate = useNavigate(); // Idinagdag ito
   const [file, setFile] = useState(null);
   const [templateName, setTemplateName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,11 +52,9 @@ const UploadTemplatePage = () => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
-
       const nextPreviewUrl = URL.createObjectURL(selectedFile);
       setPreviewUrl(nextPreviewUrl);
     }
@@ -63,10 +63,8 @@ const UploadTemplatePage = () => {
   const addOrUpdateMarker = (key, xPct = 50, yPct = 50) => {
     const placeholder = getPlaceholderMeta(key);
     const style = placeholderStyles[key] || DEFAULT_MARKER_STYLE;
-
     setMarkers((prev) => {
       const existing = prev.find((marker) => marker.key === placeholder.key);
-
       const nextMarker = {
         id: existing?.id || `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
         key: placeholder.key,
@@ -77,17 +75,10 @@ const UploadTemplatePage = () => {
         color: style.color,
         align: style.align
       };
-
       if (!existing) {
         return prev.concat(nextMarker);
       }
-
-      return prev.map((marker) => {
-        if (marker.key !== placeholder.key) {
-          return marker;
-        }
-        return nextMarker;
-      });
+      return prev.map((marker) => marker.key !== placeholder.key ? marker : nextMarker);
     });
   };
 
@@ -96,7 +87,6 @@ const UploadTemplatePage = () => {
       suppressNextImageClickRef.current = false;
       return;
     }
-
     const rect = e.currentTarget.getBoundingClientRect();
     const xPct = ((e.clientX - rect.left) / rect.width) * 100;
     const yPct = ((e.clientY - rect.top) / rect.height) * 100;
@@ -111,21 +101,14 @@ const UploadTemplatePage = () => {
   };
 
   const handleCanvasPointerMove = (e) => {
-    if (!draggingMarkerId) {
-      return;
-    }
-
+    if (!draggingMarkerId) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const xPct = ((e.clientX - rect.left) / rect.width) * 100;
     const yPct = ((e.clientY - rect.top) / rect.height) * 100;
     const clampedXPct = Math.max(0, Math.min(100, xPct));
     const clampedYPct = Math.max(0, Math.min(100, yPct));
-
     setMarkers((prev) => prev.map((marker) => {
-      if (marker.id !== draggingMarkerId) {
-        return marker;
-      }
-
+      if (marker.id !== draggingMarkerId) return marker;
       return {
         ...marker,
         xPct: Number(clampedXPct.toFixed(2)),
@@ -148,99 +131,51 @@ const UploadTemplatePage = () => {
         ...(prev[activePlaceholderKey] || DEFAULT_MARKER_STYLE),
         [field]: value
       };
-
-      const nextStyles = {
-        ...prev,
-        [activePlaceholderKey]: nextStyle
-      };
-
+      const nextStyles = { ...prev, [activePlaceholderKey]: nextStyle };
       setMarkers((currentMarkers) => currentMarkers.map((marker) => {
-        if (marker.key !== activePlaceholderKey) {
-          return marker;
-        }
-
-        return {
-          ...marker,
-          ...nextStyle
-        };
+        if (marker.key !== activePlaceholderKey) return marker;
+        return { ...marker, ...nextStyle };
       }));
-
       return nextStyles;
     });
   };
 
   const handleUpload = async (e) => {
     e.preventDefault();
-
     if (!file || !templateName) {
       setMessage({ type: 'error', text: 'Please provide both name and file.' });
       return;
     }
-
     setLoading(true);
     setMessage({ type: '', text: '' });
-
     const formData = new FormData();
-
     formData.append('name', templateName);
     formData.append('background', file);
     formData.append('placeholders', JSON.stringify({ version: 1, markers }));
-
     try {
       const token = localStorage.getItem('token');
-
-      const response = await axios.post(
-        'http://127.0.0.1:8000/api/templates/',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
+      const response = await axios.post('http://127.0.0.1:8000/api/templates/', formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       if (response.status === 201 || response.status === 200) {
         setMessage({ type: 'success', text: 'Template uploaded successfully!' });
-
         setFile(null);
         setTemplateName('');
         setMarkers([]);
-        setPlaceholderStyles(
-          PLACEHOLDER_OPTIONS.reduce((acc, option) => {
-            acc[option.key] = { ...DEFAULT_MARKER_STYLE };
-            return acc;
-          }, {})
-        );
-
+        setPlaceholderStyles(PLACEHOLDER_OPTIONS.reduce((acc, option) => {
+          acc[option.key] = { ...DEFAULT_MARKER_STYLE };
+          return acc;
+        }, {}));
         if (previewUrl) {
           URL.revokeObjectURL(previewUrl);
           setPreviewUrl('');
         }
-
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
+        if (fileInputRef.current) fileInputRef.current.value = '';
       }
-
     } catch (error) {
-      console.error("Django Error:", error.response?.data);
-
       const serverErr = error.response?.data;
-
-      const errorText = serverErr
-        ? Object.keys(serverErr)
-            .map(k =>
-              `${k.toUpperCase()}: ${
-                Array.isArray(serverErr[k])
-                  ? serverErr[k].join(', ')
-                  : serverErr[k]
-              }`
-            )
-            .join(' | ')
-        : 'Upload failed.';
-
+      const errorText = serverErr ? Object.keys(serverErr).map(k => `${k.toUpperCase()}: ${Array.isArray(serverErr[k]) ? serverErr[k].join(', ') : serverErr[k]}`).join(' | ') : 'Upload failed.';
       setMessage({ type: 'error', text: errorText });
-
     } finally {
       setLoading(false);
       setTimeout(() => setMessage({ type: '', text: '' }), 5000);
@@ -249,13 +184,15 @@ const UploadTemplatePage = () => {
 
   return (
     <div className="upload-page-container">
+      {/* Back Button Idinagdag dito */}
+      <button className="back-btn" onClick={() => navigate(-1)}>
+         Back
+      </button>
 
       {message.text && (
         <div className={message.type === 'success' ? 'success-toast' : 'error-toast'}>
           <div className="toast-content">
-            <span className="toast-icon">
-              {message.type === 'success' ? '✅' : '❌'}
-            </span>
+            <span className="toast-icon">{message.type === 'success' ? '✅' : '❌'}</span>
             <div className="toast-text">
               <strong>{message.type === 'success' ? 'Success' : 'Error'}</strong>
               <p>{message.text}</p>
@@ -263,15 +200,12 @@ const UploadTemplatePage = () => {
           </div>
         </div>
       )}
-
       <div className="upload-card">
         <div className="upload-header">
           <h1>Upload Template</h1>
           <p>Fill in the details to register your certificate design.</p>
         </div>
-
         <form className="upload-form" onSubmit={handleUpload}>
-
           <div className="form-group">
             <label>Template Name</label>
             <input
@@ -282,30 +216,19 @@ const UploadTemplatePage = () => {
               required
             />
           </div>
-
-          <div
-            className="drop-zone"
-            onClick={() => fileInputRef.current?.click()}
-          >
+          <div className="drop-zone" onClick={() => fileInputRef.current?.click()}>
             <input
               type="file"
-              id="file-input"
               ref={fileInputRef}
               onChange={handleFileChange}
               accept="image/*"
               hidden
             />
-
             <div className="drop-zone-label">
               <span className="upload-icon">📄</span>
-              {file ? (
-                <strong>{file.name}</strong>
-              ) : (
-                "Click to upload Background Image"
-              )}
+              {file ? <strong>{file.name}</strong> : "Click to upload Background Image"}
             </div>
           </div>
-
           {previewUrl && (
             <div className="template-editor">
               <div className="placeholder-toolbar">
@@ -320,38 +243,33 @@ const UploadTemplatePage = () => {
                   </button>
                 ))}
               </div>
-
               <p className="editor-hint">
                 Selected: <strong>{getPlaceholderMeta(activePlaceholderKey).label}</strong>.
-                Click image to place or replace its marker, then drag to reposition.
               </p>
-
               <div className="marker-controls">
                 <label>
                   Font Size
                   <input
                     type="range"
                     min="12"
-                    max="64"
-                    value={placeholderStyles[activePlaceholderKey]?.fontSize || DEFAULT_MARKER_STYLE.fontSize}
+                    max="120"
+                    value={placeholderStyles[activePlaceholderKey]?.fontSize || 24}
                     onChange={(e) => handleStyleChange('fontSize', Number(e.target.value))}
                   />
-                  <span>{placeholderStyles[activePlaceholderKey]?.fontSize || DEFAULT_MARKER_STYLE.fontSize}px</span>
+                  <span>{placeholderStyles[activePlaceholderKey]?.fontSize || 24}px</span>
                 </label>
-
                 <label>
                   Color
                   <input
                     type="color"
-                    value={placeholderStyles[activePlaceholderKey]?.color || DEFAULT_MARKER_STYLE.color}
+                    value={placeholderStyles[activePlaceholderKey]?.color || '#111111'}
                     onChange={(e) => handleStyleChange('color', e.target.value)}
                   />
                 </label>
-
                 <label>
                   Align
                   <select
-                    value={placeholderStyles[activePlaceholderKey]?.align || DEFAULT_MARKER_STYLE.align}
+                    value={placeholderStyles[activePlaceholderKey]?.align || 'center'}
                     onChange={(e) => handleStyleChange('align', e.target.value)}
                   >
                     <option value="left">Left</option>
@@ -360,7 +278,6 @@ const UploadTemplatePage = () => {
                   </select>
                 </label>
               </div>
-
               <div
                 className="template-preview"
                 onClick={onImageClick}
@@ -370,7 +287,6 @@ const UploadTemplatePage = () => {
                 onPointerLeave={handleCanvasPointerUp}
               >
                 <img src={previewUrl} alt="Template preview" draggable={false} />
-
                 {markers.map((marker) => (
                   <button
                     key={marker.id}
@@ -382,29 +298,22 @@ const UploadTemplatePage = () => {
                       fontSize: `${marker.fontSize}px`,
                       color: marker.color,
                       textAlign: marker.align,
-                      justifyContent:
-                        marker.align === 'left'
-                          ? 'flex-start'
-                          : marker.align === 'right'
-                            ? 'flex-end'
-                            : 'center'
+                      justifyContent: marker.align === 'left' ? 'flex-start' : marker.align === 'right' ? 'flex-end' : 'center'
                     }}
                     onPointerDown={(e) => handleMarkerPointerDown(e, marker.id)}
-                    title={`Drag ${marker.label}`}
                   >
                     {`{{${marker.key}}}`}
                   </button>
                 ))}
               </div>
-
               <div className="marker-list">
                 {markers.length === 0 ? (
-                  <p className="marker-empty">No markers yet. Click the preview to add one.</p>
+                  <p className="marker-empty">No markers yet.</p>
                 ) : (
                   markers.map((marker) => (
                     <div key={marker.id} className="marker-row">
                       <span>{marker.label}</span>
-                      <span>{marker.xPct}% , {marker.yPct}%</span>
+                      <span>{marker.xPct}%, {marker.yPct}%</span>
                       <button type="button" onClick={() => removeMarker(marker.id)}>Remove</button>
                     </div>
                   ))
@@ -412,11 +321,9 @@ const UploadTemplatePage = () => {
               </div>
             </div>
           )}
-
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'Uploading...' : 'Confirm Upload'}
           </button>
-
         </form>
       </div>
     </div>

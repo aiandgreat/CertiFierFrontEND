@@ -195,6 +195,41 @@
   margin: 0;
 }
 
+
+.upload-page-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: radial-gradient(circle at center, #0D1282 0%, #05084d 100%);
+  background-attachment: fixed;
+  padding: 80px 20px 40px;
+  box-sizing: border-box;
+}
+
+.back-btn {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(240, 222, 54, 0.5);
+  color: #F0DE36;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  z-index: 10;
+}
+
+.back-btn:hover {
+  background: #F0DE36;
+  color: #0D1282;
+  transform: translateX(-5px);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }

@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './CSVUploadPage.css';
 
 const CSVUploadPage = () => {
+  const navigate = useNavigate();
   const [csvFile, setCsvFile] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [templates, setTemplates] = useState([]);
@@ -74,9 +76,8 @@ const CSVUploadPage = () => {
         }
       );
 
-      const uploadId = createResponse.data.id; // The response has 'id' as the UUID pk
+      const uploadId = createResponse.data.id;
 
-      // Process the upload
       await axios.post(
         `http://127.0.0.1:8000/api/uploads/${uploadId}/process/`,
         {},
@@ -89,7 +90,6 @@ const CSVUploadPage = () => {
 
       setMessage({ type: 'success', text: 'CSV uploaded and processed successfully!' });
 
-      // Reset form
       setCsvFile(null);
       setSelectedTemplate('');
       if (fileInputRef.current) {
@@ -130,6 +130,11 @@ const CSVUploadPage = () => {
 
   return (
     <div className="upload-page-container">
+      {/* Back Button */}
+      <button className="back-btn" onClick={() => navigate(-1)}>
+        Back
+      </button>
+
       {message.text && (
         <div className={message.type === 'success' ? 'success-toast' : 'error-toast'}>
           <div className="toast-content">

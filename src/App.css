@@ -5,23 +5,6 @@
    Red: #D71313
 */
 
-/* MAKE PAGE FULL HEIGHT */
-html, body {
-  height: 100%;
-}
-
-/* MAIN CONTAINER FIX */
-.home-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* PUSH FOOTER DOWN */
-footer {
-  margin-top: auto;
-}
-
 /* 1. Reset and Fonts */
 * {
   margin: 0;
@@ -29,29 +12,44 @@ footer {
   box-sizing: border-box;
 }
 
+/* ANTI-SCROLL FIX */
+html, body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Tinatanggal ang scrollbars */
+}
+
 body {
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.6;
-  color: #0D1282; /* Deep Blue text for better readability */
-  background-color: #EEEDED; /* Light school grey/white */
+  line-height: 1.4; /* Slightly reduced for space */
+  color: #0D1282;
+  background-color: #EEEDED;
   background-image: radial-gradient(circle at top right, #ffffff, #EEEDED);
-  min-height: 100vh;
+}
+
+/* MAIN CONTAINER FIX */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Fixed height */
 }
 
 /* 2. Hero Section (Header) */
 header {
-  /* Dynamic gradient using your School Blue and a darker shade */
   background: linear-gradient(135deg, #0D1282 0%, #05084d 100%);
   color: #EEEDED;
-  padding: 120px 20px;
+  padding: 40px 20px; /* Binawasan ang padding para magkasya */
   text-align: center;
   position: relative;
   overflow: hidden;
-  /* Mas modernong kurba */
-  border-bottom: 8px solid #F0DE36; /* Yellow Accent Line */
+  border-bottom: 8px solid #F0DE36;
+  flex: 1; /* Hahayaan itong lumaki depende sa space */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Floating "School Spirit" Glow */
 header::before {
   content: '';
   position: absolute;
@@ -59,14 +57,14 @@ header::before {
   right: -5%;
   width: 300px;
   height: 300px;
-  background: rgba(240, 222, 54, 0.15); /* Subtle Yellow Glow */
+  background: rgba(240, 222, 54, 0.15);
   border-radius: 50%;
   filter: blur(80px);
 }
 
 header h1 {
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
+  font-size: 2.8rem; /* Scaled down slightly */
+  margin-bottom: 0.5rem;
   font-weight: 800;
   letter-spacing: -1px;
   color: #FFFFFF;
@@ -74,11 +72,9 @@ header h1 {
 }
 
 header p {
-  font-size: 1.25rem;
-  margin-bottom: 2.5rem;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
   max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
   color: #EEEDED;
   opacity: 0.9;
 }
@@ -88,15 +84,13 @@ header div div {
   display: flex;
   justify-content: center;
   gap: 15px;
-  flex-wrap: wrap;
 }
 
-/* Glass Buttons */
 button {
-  padding: 14px 32px;
-  font-size: 1rem;
+  padding: 12px 28px;
+  font-size: 0.9rem;
   font-weight: 700;
-  border-radius: 8px; /* Mas formal na school look (slight rounded) */
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
@@ -105,12 +99,11 @@ button {
 }
 
 header button {
-  background: #F0DE36; /* Prominent Yellow Button */
+  background: #F0DE36;
   color: #0D1282;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* secondary button logic if needed - applying Red to a second button */
 header button:nth-child(2) {
   background: #D71313;
   color: #ffffff;
@@ -119,16 +112,15 @@ header button:nth-child(2) {
 header button:hover {
   transform: translateY(-3px);
   filter: brightness(1.1);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-/* 3. Features Section - CLEAN CARDS */
+/* 3. Features Section - ADJUSTED FOR NO SCROLL */
 section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  max-width: 1200px;
-  margin: 60px auto 80px; 
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 30px auto; 
   padding: 0 20px;
   position: relative;
   z-index: 10;
@@ -136,54 +128,42 @@ section {
 
 section div {
   background: #ffffff; 
-  padding: 40px 30px;
+  padding: 20px; /* Compact padding */
   border-radius: 12px;
   text-align: center;
-  border-top: 5px solid #0D1282; /* School Blue Border */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-section div:hover {
-  transform: translateY(-10px);
-  border-top-color: #D71313; /* Switches to Red on hover */
-  box-shadow: 0 15px 35px rgba(13, 18, 130, 0.1);
+  border-top: 5px solid #0D1282;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 section h3 {
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   color: #0D1282;
-  margin-bottom: 15px;
-  font-weight: 700;
+  margin-bottom: 10px;
 }
 
 section p {
   color: #555555;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 /* 4. Footer */
 footer {
   text-align: center;
-  padding: 40px 20px;
-  background-color: #0D1282; /* Primary School Blue */
+  padding: 15px 20px; /* Compact footer */
+  background-color: #0D1282;
   color: #EEEDED;
-  border-top: 4px solid #D71313; /* Red accent line */
+  border-top: 4px solid #D71313;
+  margin-top: auto;
 }
 
 footer p {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   opacity: 0.8;
-  letter-spacing: 0.5px;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  header h1 {
-    font-size: 2.5rem;
-  }
-  header {
-    padding: 80px 20px;
-    clip-path: none; /* Simplier on mobile */
-  }
+  header h1 { font-size: 2rem; }
+  section { grid-template-columns: 1fr; gap: 10px; margin: 10px auto; }
+  section div { padding: 10px; }
 }

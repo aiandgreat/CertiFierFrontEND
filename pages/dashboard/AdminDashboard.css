@@ -1,21 +1,11 @@
-/* AdminDashboard.css - School Edition 
-    Blue: #0D1282 | White: #EEEDED | Yellow: #F0DE36 | Red: #D71313
-*/
-
-/* ===============================
-    LAYOUT - FIXED SCROLL ISSUE
-================================ */
 .admin-container {
   display: flex;
-  height: 100vh; /* Lock height to viewport */
+  height: 100vh;
   width: 100vw;
-  overflow: hidden; /* Prevent double scrollbars */
+  overflow: hidden;
   background-color: #f8f9fa;
 }
 
-/* ===============================
-    SIDEBAR
-================================ */
 .admin-sidebar {
   width: 260px;
   background-color: #0D1282; 
@@ -24,7 +14,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  flex-shrink: 0; /* Prevents sidebar from shrinking */
+  flex-shrink: 0;
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -84,20 +74,14 @@
   background-color: #b00f0f;
 }
 
-/* ===============================
-    MAIN - THE SCROLLABLE PART
-================================ */
 .admin-main {
   flex-grow: 1;
   padding: 2rem;
   height: 100vh;
-  overflow-y: auto; /* Enable vertical scrolling here */
-  min-width: 0; /* Fixes layout breaking with large tables */
+  overflow-y: auto;
+  min-width: 0;
 }
 
-/* ===============================
-    STATS
-================================ */
 .admin-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -136,9 +120,6 @@
   font-size: 0.75rem;
 }
 
-/* ===============================
-    TABLE CONTAINER
-================================ */
 .admin-table-container {
   background: white;
   padding: 1.5rem;
@@ -159,9 +140,6 @@
   padding-left: 10px;
 }
 
-/* ===============================
-    TABLE
-================================ */
 .admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -185,9 +163,6 @@
   text-align: center;
 }
 
-/* ===============================
-    INPUT (EDIT MODE)
-================================ */
 .edit-input {
   width: 90%;
   padding: 5px;
@@ -202,9 +177,6 @@
   outline: none;
 }
 
-/* ===============================
-    ACTION BUTTONS
-================================ */
 .action-buttons {
   display: flex;
   gap: 6px;
@@ -236,9 +208,6 @@
 .delete-btn { background-color: transparent; border: 1.2px solid #D71313; color: #D71313; }
 .delete-btn:hover { background-color: #D71313; color: #EEEDED; }
 
-/* ===============================
-    BADGES
-================================ */
 .badge {
   padding: 4px 8px;
   border-radius: 5px;
@@ -249,17 +218,11 @@
 .badge.valid { background: rgba(16, 185, 129, 0.1); color: #10b981; }
 .badge.invalid { background: rgba(215, 19, 19, 0.1); color: #D71313; }
 
-/* ===============================
-    TABLE RESPONSIVE
-================================ */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
 }
 
-/* ===============================
-    MODAL
-================================ */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -281,9 +244,6 @@
   width: 300px;
 }
 
-/* ===============================
-    IMAGE PREVIEW MODAL
-================================ */
 .preview-overlay {
   position: fixed;
   top: 0;
@@ -325,9 +285,6 @@
   font-size: 1.2rem;
 }
 
-/* ===============================
-    LOADING SCREEN
-================================ */
 .loading-screen {
   height: 100vh;
   display: flex;
@@ -339,9 +296,6 @@
   font-size: 1.5rem;
 }
 
-/* ===============================
-    RESPONSIVE
-================================ */
 @media (max-width: 768px) {
   .admin-sidebar { display: none; }
   .admin-main { padding: 1rem; }
@@ -362,3 +316,211 @@
   background: #0D1282;
   color: white;
 }
+
+/* DELETE SUCCESS TOAST */
+.delete-success-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ffffff; /* Red para sa delete action */
+  color: #278103;
+  padding: 12px 24px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 10px 25px rgba(37, 36, 36, 0.3);
+  z-index: 10001; /* Mas mataas sa modals */
+  animation: slideInRight 0.4s ease-out;
+  border-left: 5px solid #F0DE36; /* Yellow accent */
+}
+
+.delete-success-toast .toast-icon {
+  font-size: 1.2rem;
+}
+
+.delete-success-toast p {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.table-search-input {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 200px;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.table-search-input:focus {
+  outline: none;
+  border-color: #0D1282;
+  box-shadow: 0 0 5px rgba(13, 18, 130, 0.3);
+}
+
+/* Templates Grid */
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.template-card {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.template-card:hover {
+  transform: translateY(-5px);
+}
+
+.template-preview {
+  width: 100%;
+  height: 130px;
+  background: #f0f0f0;
+}
+
+.template-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.template-info {
+  padding: 12px;
+  text-align: center;
+}
+
+.template-info h4 {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.delete-btn-sm {
+  width: 100%;
+  padding: 6px;
+  background: #fff5f5;
+  color: #e03131;
+  border: 1px solid #ffc9c9;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.delete-btn-sm:hover {
+  background: #fae5e5;
+}
+
+.masked-pass {
+  color: #bbb;
+  letter-spacing: 2px;
+  font-size: 0.8rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Animation para sa pagpasok ng Toast */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Template Grid Layout */
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.template-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  transition: 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.template-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+.template-preview {
+  width: 100%;
+  height: 150px;
+  background: #f1f5f9;
+}
+
+.template-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.template-info {
+  padding: 1rem;
+  text-align: center;
+}
+
+.template-info h4 {
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  color: #0D1282;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.delete-btn-sm {
+  width: 100%;
+  padding: 6px;
+  background: white;
+  border: 1px solid #D71313;
+  color: #D71313;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.delete-btn-sm:hover {
+  background: #D71313;
+  color: white;
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-style: italic;
+}
+
