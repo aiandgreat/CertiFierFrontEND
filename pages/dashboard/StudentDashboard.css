@@ -1,16 +1,23 @@
-html, body {
-  height: 100%;
-  overflow: hidden; /* ❗ disables full page scroll */
-}
+/* StudentDashboard.css - Scroll Fixed */
 
-/* LAYOUT */
-.student-container {
-  display: flex;
-  height: 100vh;
+/* 1. RESET HTML/BODY: Alisin ang rigid overflow */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   background-color: #f8f9fa;
 }
 
-/* SIDEBAR */
+/* 2. LAYOUT: I-lock ang container sa screen */
+.student-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Para hindi mag-double scroll sa labas */
+  background-color: #f8f9fa;
+}
+
+/* 3. SIDEBAR: Fixed at hindi gumagalaw */
 .student-sidebar {
   width: 260px;
   background-color: #0D1282;
@@ -19,12 +26,16 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  flex-shrink: 0; /* Huwag hayaang mapipi */
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
 }
 
 .student-sidebar h2 {
   color: #F0DE36;
   margin-bottom: 2rem;
   font-weight: 800;
+  text-transform: uppercase;
+  font-size: 1.4rem;
 }
 
 .student-nav {
@@ -53,19 +64,20 @@ html, body {
   color: #0D1282;
 }
 
-/* MAIN */
+/* 4. MAIN CONTENT: DITO ANG SCROLL FIX */
 .student-main {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   padding: 2rem;
-  height: 100vh;
-  overflow: hidden; /* prevent page scroll */
+  height: 100vh;      /* Kapantay ng screen */
+  overflow-y: auto;   /* 🔥 ETO ANG NAG-ENABLE NG SCROLL */
+  min-width: 0;       /* Iwas sa layout breaking */
 }
 
 /* HEADER */
 .student-header h1 {
-  color: #0D1282;
+  color: #0D1282; /* Iniba ko to para mabasa, change to #FFFF kung dark mode header mo */
   margin-bottom: 5px;
 }
 
@@ -75,12 +87,14 @@ html, body {
 
 /* TABLE SECTION */
 .student-table-container {
-  display: block; /* 🔥 ensures vertical layout */
+  display: block;
   background: white;
   padding: 1.5rem;
   border-radius: 12px;
   margin-top: 1.5rem;
   border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem; /* Space sa dulo ng scroll */
 }
 
 /* TITLE */
@@ -100,18 +114,21 @@ html, body {
 }
 
 .student-table th {
-  padding: 10px;
+  padding: 12px 10px;
   background: #f8fafc;
   color: #0D1282;
   font-size: 0.75rem;
   text-align: center;
+  border-bottom: 2px solid #EEEDED;
+  text-transform: uppercase;
 }
 
 .student-table td {
-  padding: 10px;
+  padding: 12px 10px;
   text-align: center;
   font-size: 0.85rem;
   border-bottom: 1px solid #f1f5f9;
+  color: #334155;
 }
 
 /* ACTION BUTTONS */
@@ -123,12 +140,13 @@ html, body {
 
 .edit-btn,
 .save-btn {
-  padding: 4px 8px;
+  padding: 6px 12px;
   font-size: 0.65rem;
   border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
-  min-width: 60px;
+  min-width: 70px;
+  text-transform: uppercase;
 }
 
 .edit-btn {
@@ -146,10 +164,6 @@ html, body {
   background: #10b981;
   color: white;
   border: none;
-}
-
-.save-btn:hover {
-  opacity: 0.9;
 }
 
 /* BADGE */
@@ -170,37 +184,41 @@ html, body {
   color: #D71313;
 }
 
-/* MODAL */
+/* MODAL - Fixed for stacking issues */
 .preview-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.7);
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.8);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 }
 
 .preview-card {
   background: white;
-  width: 80%;
-  height: 80%;
-  border-radius: 10px;
+  width: 85%;
+  height: 85%;
+  border-radius: 12px;
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .preview-frame {
   flex-grow: 1;
   border: none;
+  width: 100%;
+  height: 100%;
 }
 
 .close-preview-x {
   position: absolute;
-  top: 10px;
+  top: 15px;
   right: 15px;
   background: #D71313;
   color: white;
@@ -210,46 +228,36 @@ html, body {
   width: 35px;
   height: 35px;
   cursor: pointer;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .preview-info {
   text-align: center;
-  padding: 10px;
-  font-weight: 600;
-}
-
-/* EMPTY */
-.empty-state {
-  text-align: center;
-  padding: 3rem;
-  color: #64748b;
-}
-
-/* LOADING */
-.loading-screen {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 800;
+  padding: 15px;
+  font-weight: 700;
+  background: #f8fafc;
   color: #0D1282;
 }
 
 /* RESPONSIVE */
 .table-responsive {
   overflow-x: auto;
-}
-
-.student-header h1, .student-header p {
-  color: #FFFF;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (max-width: 768px) {
   .student-sidebar {
     display: none;
   }
-
   .student-main {
     padding: 1rem;
   }
 }
+
+.student-header h1, .student-header p {
+  color: #FFFF;
+}
+

@@ -1,18 +1,20 @@
 /* AdminDashboard.css - School Edition 
-   Blue: #0D1282 | White: #EEEDED | Yellow: #F0DE36 | Red: #D71313
+    Blue: #0D1282 | White: #EEEDED | Yellow: #F0DE36 | Red: #D71313
 */
 
 /* ===============================
-   LAYOUT
+    LAYOUT - FIXED SCROLL ISSUE
 ================================ */
 .admin-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh; /* Lock height to viewport */
+  width: 100vw;
+  overflow: hidden; /* Prevent double scrollbars */
   background-color: #f8f9fa;
 }
 
 /* ===============================
-   SIDEBAR
+    SIDEBAR
 ================================ */
 .admin-sidebar {
   width: 260px;
@@ -21,9 +23,8 @@
   padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;
-  position: sticky;
-  top: 0;
   height: 100vh;
+  flex-shrink: 0; /* Prevents sidebar from shrinking */
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -84,15 +85,18 @@
 }
 
 /* ===============================
-   MAIN
+    MAIN - THE SCROLLABLE PART
 ================================ */
 .admin-main {
   flex-grow: 1;
   padding: 2rem;
+  height: 100vh;
+  overflow-y: auto; /* Enable vertical scrolling here */
+  min-width: 0; /* Fixes layout breaking with large tables */
 }
 
 /* ===============================
-   STATS
+    STATS
 ================================ */
 .admin-stats-grid {
   display: grid;
@@ -133,7 +137,7 @@
 }
 
 /* ===============================
-   TABLE CONTAINER
+    TABLE CONTAINER
 ================================ */
 .admin-table-container {
   background: white;
@@ -141,7 +145,6 @@
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
   border: 1px solid #e2e8f0;
-
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -157,7 +160,7 @@
 }
 
 /* ===============================
-   TABLE
+    TABLE
 ================================ */
 .admin-table {
   width: 100%;
@@ -183,7 +186,7 @@
 }
 
 /* ===============================
-   INPUT (EDIT MODE)
+    INPUT (EDIT MODE)
 ================================ */
 .edit-input {
   width: 90%;
@@ -200,7 +203,7 @@
 }
 
 /* ===============================
-   ACTION BUTTONS (FIXED)
+    ACTION BUTTONS
 ================================ */
 .action-buttons {
   display: flex;
@@ -209,7 +212,6 @@
   align-items: center;
 }
 
-/* COMMON BUTTON STYLE */
 .edit-btn,
 .delete-btn,
 .save-btn,
@@ -227,56 +229,15 @@
   text-transform: uppercase;
 }
 
-/* EDIT */
-.edit-btn {
-  background: transparent;
-  border: 1.2px solid #0D1282;
-  color: #0D1282;
-}
-
-.edit-btn:hover {
-  background: #0D1282;
-  color: #EEEDED;
-}
-
-/* SAVE */
-.save-btn {
-  background-color: #10b981;
-  color: white;
-  border: none;
-}
-
-.save-btn:hover {
-  opacity: 0.9;
-}
-
-/* CANCEL */
-.cancel-btn {
-  background-color: #D71313;
-  color: white;
-  border: none;
-}
-
-/* DELETE */
-.delete-btn {
-  background-color: transparent;
-  border: 1.2px solid #D71313;
-  color: #D71313;
-}
-
-.delete-btn:hover {
-  background-color: #D71313;
-  color: #EEEDED;
-}
-
-/* FIX COLUMN WIDTH */
-.col-actions {
-  width: 140px;
-  white-space: nowrap;
-}
+.edit-btn { background: transparent; border: 1.2px solid #0D1282; color: #0D1282; }
+.edit-btn:hover { background: #0D1282; color: #EEEDED; }
+.save-btn { background-color: #10b981; color: white; border: none; }
+.cancel-btn { background-color: #D71313; color: white; border: none; }
+.delete-btn { background-color: transparent; border: 1.2px solid #D71313; color: #D71313; }
+.delete-btn:hover { background-color: #D71313; color: #EEEDED; }
 
 /* ===============================
-   BADGES
+    BADGES
 ================================ */
 .badge {
   padding: 4px 8px;
@@ -285,18 +246,11 @@
   font-weight: 800;
 }
 
-.badge.valid { 
-  background: rgba(16, 185, 129, 0.1); 
-  color: #10b981; 
-}
-
-.badge.invalid { 
-  background: rgba(215, 19, 19, 0.1); 
-  color: #D71313; 
-}
+.badge.valid { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.badge.invalid { background: rgba(215, 19, 19, 0.1); color: #D71313; }
 
 /* ===============================
-   TABLE RESPONSIVE
+    TABLE RESPONSIVE
 ================================ */
 .table-responsive {
   width: 100%;
@@ -304,7 +258,7 @@
 }
 
 /* ===============================
-   MODAL
+    MODAL
 ================================ */
 .modal-overlay {
   position: fixed;
@@ -328,42 +282,8 @@
 }
 
 /* ===============================
-   RESPONSIVE
+    IMAGE PREVIEW MODAL
 ================================ */
-@media (max-width: 768px) {
-  .admin-sidebar {
-    display: none;
-  }
-
-  .admin-main {
-    padding: 1rem;
-  }
-
-  .admin-table th,
-  .admin-table td {
-    font-size: 0.7rem;
-    padding: 8px;
-  }
-}
-
-/* VIEW FILE BUTTON */
-.view-file-btn {
-  background: transparent;
-  border: 1px solid #0D1282;
-  color: #0D1282;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.view-file-btn:hover {
-  background: #0D1282;
-  color: white;
-}
-
 .preview-overlay {
   position: fixed;
   top: 0;
@@ -374,55 +294,40 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Para lumutang sa ibabaw ng lahat */
+  z-index: 9999;
 }
 
-/* PREVIEW MODAL STYLING */
-.preview-content {
+.preview-card {
   position: relative;
-  max-width: 80%;
-  max-height: 85vh;
   background: white;
-  padding: 10px;
+  padding: 15px;
   border-radius: 12px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.img-fluid-preview {
-  max-width: 100%;
+.full-template-img {
+  max-width: 90vw;
   max-height: 80vh;
   object-fit: contain;
-  border-radius: 8px;
+  display: block;
 }
 
-.close-preview {
+.close-preview-x {
   position: absolute;
-  top: -15px;
-  right: -15px;
+  top: -10px;
+  right: -10px;
   background: #D71313;
   color: white;
   border: none;
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  font-size: 1.5rem;
   cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  z-index: 1001;
+  font-size: 1.2rem;
 }
 
-.close-preview:hover {
-  transform: scale(1.1);
-  background: #b00f0f;
-}
-
-/* LOADING SCREEN */
+/* ===============================
+    LOADING SCREEN
+================================ */
 .loading-screen {
   height: 100vh;
   display: flex;
@@ -432,4 +337,28 @@
   color: #0D1282;
   font-weight: 800;
   font-size: 1.5rem;
+}
+
+/* ===============================
+    RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .admin-sidebar { display: none; }
+  .admin-main { padding: 1rem; }
+}
+
+.view-file-btn {
+  background: transparent;
+  border: 1px solid #0D1282;
+  color: #0D1282;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.view-file-btn:hover {
+  background: #0D1282;
+  color: white;
 }
