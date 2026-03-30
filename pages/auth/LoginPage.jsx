@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './auth.css'; 
+import CertiLogo from '../../src/Images/CertiLogo.png';
+
+const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
+const API_BASE = 'http://127.0.0.1:8000';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -12,14 +17,64 @@ const LoginPage = () => {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
 
+  const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
+
+  const redirectByRole = (role) => {
+    if (role === 'admin') {
+      navigate('/AdminDashboard');
+      return;
+    }
+    navigate('/StudentDashboard');
+  };
+
+  const handleGoogleLogin = () => {
+    const returnTo = `${window.location.origin}/login`;
+    const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
+    window.location.href = googleUrl;
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const access = params.get('access');
+    const role = params.get('role');
+    const fullName = params.get('full_name');
+    const authError = params.get('error');
+
+    if (authError) {
+      setError(authError);
+      setShowErrorToast(true);
+      setTimeout(() => setShowErrorToast(false), 4000);
+      return;
+    }
+
+    if (!access || !role) return;
+
+    localStorage.setItem('token', access);
+    localStorage.setItem('user_role', role);
+    localStorage.setItem('user_name', fullName || 'User');
+    setShowSuccessToast(true);
+
+    // Remove sensitive query params from URL before redirect.
+    window.history.replaceState({}, document.title, '/login');
+    setTimeout(() => redirectByRole(role), 1200);
+  }, [location.search, navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
     setShowErrorToast(false);
 
+    if (!isSchoolEmail(email)) {
+      setError('Only @ua.edu.ph email addresses are allowed.');
+      setShowErrorToast(true);
+      setTimeout(() => setShowErrorToast(false), 4000);
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/auth/login/', {
+      const response = await axios.post(`${API_BASE}/api/auth/login/`, {
         email: email, 
         password: password
       });
@@ -31,13 +86,7 @@ const LoginPage = () => {
 
       setShowSuccessToast(true);
 
-      setTimeout(() => {
-        if (role === 'admin') {
-          navigate('/AdminDashboard');
-        } else {
-          navigate('/StudentDashboard'); 
-        }
-      }, 2000);
+      setTimeout(() => redirectByRole(role), 2000);
 
     } catch (err) {
       const errorMsg = err.response?.data?.detail || "Invalid email or password.";
@@ -82,7 +131,9 @@ const LoginPage = () => {
         {/* LEFT SIDE: System Description */}
         <div className="auth-info-section">
           <div className="info-content">
-            <h1>CertiFier</h1>
+            <div className='LogoLoginContainer'>
+            <img className = 'LogoLogin' src={CertiLogo} alt="Certifier Logo" />
+            </div>
             <p>The fastest and most secure way to manage your digital certificates and academic credentials.</p>
             <div className="info-graphic">
                <span>✓ Verified</span>
@@ -105,11 +156,14 @@ const LoginPage = () => {
                 <label>Email Address</label>
                 <input 
                   type="email" 
-                  placeholder="Enter your email" 
+                  placeholder="name@ua.edu.ph" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  pattern="^[A-Za-z0-9._%+-]+@ua\.edu\.ph$"
+                  title="Use your school email ending with @ua.edu.ph"
                   required 
                 />
+                <small className="input-hint">Use your UA school email (@ua.edu.ph).</small>
               </div>
 
               <div className="form-group">
@@ -125,6 +179,12 @@ const LoginPage = () => {
 
               <button type="submit" className="auth-submit" disabled={loading || showSuccessToast}>
                 {loading ? "Authenticating..." : "Login"}
+              </button>
+
+              <div className="auth-divider"><span>OR</span></div>
+
+              <button type="button" className="google-auth-btn" onClick={handleGoogleLogin} disabled={loading || showSuccessToast}>
+                Continue with UA Google
               </button>
             </form>
 

@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './auth.css';
+import CertiLogo from '../../src/Images/CertiLogo.png';
+
+
+const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
+const API_BASE = 'http://127.0.0.1:8000';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -16,16 +21,29 @@ const RegisterPage = () => {
   const [error, setError] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
+  const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
+
+  const handleGoogleSignup = () => {
+    const returnTo = `${window.location.origin}/login`;
+    const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
+    window.location.href = googleUrl;
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    
+
     // Client-side validation
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
+      return;
+    }
+
+    if (!isSchoolEmail(formData.email)) {
+      setError('Only @ua.edu.ph email addresses are allowed.');
       return;
     }
 
@@ -43,7 +61,7 @@ const RegisterPage = () => {
       });
 
       setShowSuccess(true);
-      
+
       // Redirect to login after success
       setTimeout(() => {
         navigate('/login');
@@ -79,12 +97,15 @@ const RegisterPage = () => {
         {/* LEFT SIDE: Info Section */}
         <div className="auth-info-section register-theme">
           <div className="info-content">
+            <div className='LogoLoginContainer'>
+              <img className='LogoLogin' src={CertiLogo} alt="Certifier Logo" />
+            </div>
             <h1>Join Us Today</h1>
             <p>Start organizing your certificates and credentials in one secure location.</p>
             <div className="info-graphic">
-               <span>✓ Free Account</span>
-               <span>✓ Cloud Storage</span>
-               <span>✓ Data Privacy</span>
+              <span>✓ Free Account</span>
+              <span>✓ EdDSA</span>
+              <span>✓ Data Privacy</span>
             </div>
           </div>
         </div>
@@ -103,66 +124,75 @@ const RegisterPage = () => {
               <div className="form-row" style={{ display: 'flex', gap: '10px' }}>
                 <div className="form-group" style={{ flex: 1 }}>
                   <label>First Name</label>
-                  <input 
+                  <input
                     name="firstName"
-                    type="text" 
-                    placeholder="John" 
+                    type="text"
+                    placeholder="John"
                     value={formData.firstName}
                     onChange={handleChange}
-                    required 
+                    required
                   />
                 </div>
                 <div className="form-group" style={{ flex: 1 }}>
                   <label>Last Name</label>
-                  <input 
+                  <input
                     name="lastName"
-                    type="text" 
-                    placeholder="Doe" 
+                    type="text"
+                    placeholder="Doe"
                     value={formData.lastName}
                     onChange={handleChange}
-                    required 
+                    required
                   />
                 </div>
               </div>
 
               <div className="form-group">
                 <label>Email Address</label>
-                <input 
+                <input
                   name="email"
-                  type="email" 
-                  placeholder="name@email.com" 
+                  type="email"
+                  placeholder="name@ua.edu.ph"
                   value={formData.email}
                   onChange={handleChange}
-                  required 
+                  pattern="^[A-Za-z0-9._%+-]+@ua\.edu\.ph$"
+                  title="Use your school email ending with @ua.edu.ph"
+                  required
                 />
+                <small className="input-hint">Registration is limited to UA school emails (@ua.edu.ph).</small>
               </div>
 
               <div className="form-group">
                 <label>Password</label>
-                <input 
+                <input
                   name="password"
-                  type="password" 
-                  placeholder="••••••••" 
+                  type="password"
+                  placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  required 
+                  required
                 />
               </div>
 
               <div className="form-group">
                 <label>Confirm Password</label>
-                <input 
+                <input
                   name="confirmPassword"
-                  type="password" 
-                  placeholder="••••••••" 
+                  type="password"
+                  placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  required 
+                  required
                 />
               </div>
 
               <button type="submit" className="auth-submit" disabled={loading || showSuccess}>
                 {loading ? "Creating Account..." : "Register Now"}
+              </button>
+
+              <div className="auth-divider"><span>OR</span></div>
+
+              <button type="button" className="google-auth-btn" onClick={handleGoogleSignup} disabled={loading || showSuccess}>
+                Continue with UA Google
               </button>
             </form>
 

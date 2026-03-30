@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './App.css'; 
+import uaLogo from './Images/UALOGO.png';
 
 const HomePage = () => {
   return (
     <div className="home-container">
       <header>
         <div className="hero-content">
+          <img className="logo" src={uaLogo} alt="UA LOGO" />
           <h1>CertiFier</h1>
           <p>University of the Assumption's First Automated Certificate Generation and Verification system.</p>
           
@@ -40,7 +42,7 @@ const HomePage = () => {
       </section>
 
       <footer>
-        <p>&copy; 2024 CertiFier Manager. All rights reserved.</p>
+        <p>&copy; 2026 CertiFier | GALARA. All rights reserved.</p>
       </footer>
     </div>
   );

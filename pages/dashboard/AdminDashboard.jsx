@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import JSZip from 'jszip';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -13,7 +14,7 @@ const AdminDashboard = () => {
 
   // States para sa Editing
   const [editingCert, setEditingCert] = useState(null);
-  const [editFormData, setEditFormData] = useState({ full_name: '', course: '' });
+  const [editFormData, setEditFormData] = useState({ full_name: '', course: '', owner: '' });
   const [editingUser, setEditingUser] = useState(null);
   const [editUserFormData, setEditUserFormData] = useState({ 
     first_name: '', last_name: '', email: '', username: '', role: '' 
@@ -24,6 +25,9 @@ const AdminDashboard = () => {
   const [toast, setToast] = useState({ show: false, message: '' });
   const [userSearch, setUserSearch] = useState('');
   const [templateSearch, setTemplateSearch] = useState('');
+  const [issuanceSearch, setIssuanceSearch] = useState('');
+  const [selectedCerts, setSelectedCerts] = useState(new Set());
+  const [downloadingCerts, setDownloadingCerts] = useState(false);
 
   const token = localStorage.getItem('token');
   const API_BASE = "http://127.0.0.1:8000";
@@ -74,10 +78,40 @@ const AdminDashboard = () => {
     setTimeout(() => setToast({ show: false, message: '' }), 3000);
   };
 
+  const getUserLabel = (user) => {
+    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+    return fullName || user.email || user.username || `User ${user.id}`;
+  };
+
+  const getOwnerId = (cert) => {
+    if (!cert?.owner) return '';
+    if (typeof cert.owner === 'object') {
+      if (cert.owner.id !== undefined && cert.owner.id !== null) return String(cert.owner.id);
+      return '';
+    }
+    return String(cert.owner);
+  };
+
+  const getOwnerDisplay = (cert) => {
+    const ownerId = getOwnerId(cert);
+    if (!ownerId) return 'Unassigned';
+    const matchedUser = users.find((user) => String(user.id) === ownerId);
+    if (matchedUser) return getUserLabel(matchedUser);
+    if (typeof cert.owner === 'object') {
+      const fullName = `${cert.owner.first_name || ''} ${cert.owner.last_name || ''}`.trim();
+      return fullName || cert.owner.email || cert.owner.username || 'Unknown User';
+    }
+    return `User ${ownerId}`;
+  };
+
   const handleSaveEdit = async (id) => {
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      await axios.patch(`${API_BASE}/api/certificates/${id}/`, editFormData, { headers });
+      const payload = {
+        ...editFormData,
+        owner: editFormData.owner ? editFormData.owner : null
+      };
+      await axios.patch(`${API_BASE}/api/certificates/${id}/`, payload, { headers });
       setEditingCert(null);
       showToast('Certificate updated successfully!');
       fetchData();
@@ -114,6 +148,102 @@ const AdminDashboard = () => {
   };
 
   if (loading) return <div className="loading-screen">Loading Portal...</div>;
+
+  const filteredRecentCerts = recentCerts.filter((cert) => {
+    const term = issuanceSearch.toLowerCase();
+    if (!term) return true;
+    const certId = cert.certificate_id?.toLowerCase() || '';
+    const fullName = cert.full_name?.toLowerCase() || '';
+    const course = cert.course?.toLowerCase() || '';
+    const ownerName = getOwnerDisplay(cert).toLowerCase();
+    return certId.includes(term) || fullName.includes(term) || course.includes(term) || ownerName.includes(term);
+  });
+
+  const toggleCertSelect = (certId) => {
+    const newSelected = new Set(selectedCerts);
+    if (newSelected.has(certId)) {
+      newSelected.delete(certId);
+    } else {
+      newSelected.add(certId);
+    }
+    setSelectedCerts(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedCerts.size === filteredRecentCerts.length) {
+      setSelectedCerts(new Set());
+    } else {
+      setSelectedCerts(new Set(filteredRecentCerts.map((cert) => cert.id)));
+    }
+  };
+
+  const downloadSinglePDF = async (cert) => {
+    setDownloadingCerts(true);
+    try {
+      const response = await axios.get(`${API_BASE}/api/certificates/${cert.id}/download/`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob'
+      });
+      const file = new Blob([response.data], { type: 'application/pdf' });
+      const fileURL = window.URL.createObjectURL(file);
+      const link = document.createElement('a');
+      link.href = fileURL;
+      link.setAttribute('download', `Cert_${cert.certificate_id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(fileURL);
+      showToast(`Downloaded ${cert.certificate_id}.pdf`);
+    } catch (error) {
+      console.error('Download error:', error);
+      showToast('Failed to download certificate');
+    } finally {
+      setDownloadingCerts(false);
+    }
+  };
+
+  const downloadMultiplePDFs = async () => {
+    if (selectedCerts.size === 0) {
+      showToast('Please select at least one certificate');
+      return;
+    }
+
+    setDownloadingCerts(true);
+    try {
+      const zip = new JSZip();
+      const selectedCertsList = filteredRecentCerts.filter((cert) => selectedCerts.has(cert.id));
+
+      // Download all PDFs and add to zip
+      await Promise.all(
+        selectedCertsList.map(async (cert) => {
+          const response = await axios.get(`${API_BASE}/api/certificates/${cert.id}/download/`, {
+            headers: { Authorization: `Bearer ${token}` },
+            responseType: 'blob'
+          });
+          zip.file(`Cert_${cert.certificate_id}.pdf`, response.data);
+        })
+      );
+
+      // Generate and download zip
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const fileURL = window.URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = fileURL;
+      link.setAttribute('download', `Certificates_${new Date().getTime()}.zip`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(fileURL);
+      
+      showToast(`Downloaded ${selectedCerts.size} certificate(s) as zip`);
+      setSelectedCerts(new Set());
+    } catch (error) {
+      console.error('Bulk download error:', error);
+      showToast('Failed to download certificates');
+    } finally {
+      setDownloadingCerts(false);
+    }
+  };
 
   return (
     <div className="admin-container">
@@ -208,24 +338,78 @@ const AdminDashboard = () => {
         </section>
 
         <section className="admin-table-container">
-          <div className="table-header"><h3>Recent Issuances</h3></div>
+          <div className="table-header">
+            <h3>Recent Issuances</h3>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <input
+                type="text"
+                placeholder="Search issuances..."
+                value={issuanceSearch}
+                onChange={(e) => setIssuanceSearch(e.target.value)}
+                className="table-search-input"
+              />
+              {selectedCerts.size > 0 && (
+                <button
+                  className="edit-btn"
+                  onClick={downloadMultiplePDFs}
+                  disabled={downloadingCerts}
+                  style={{ whiteSpace: 'nowrap', minWidth: '150px' }}
+                >
+                  {downloadingCerts ? 'Downloading...' : `Download (${selectedCerts.size})`}
+                </button>
+              )}
+            </div>
+          </div>
           <div className="table-responsive">
             <table className="admin-table">
               <thead>
-                <tr><th>Full ID</th><th>Recipient</th><th>Course</th><th>Actions</th></tr>
+                <tr>
+                  <th style={{ width: '40px' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedCerts.size === filteredRecentCerts.length && filteredRecentCerts.length > 0}
+                      onChange={toggleSelectAll}
+                      title="Select all"
+                    />
+                  </th>
+                  <th>Full ID</th><th>Recipient</th><th>Course</th><th>Owner</th><th>Actions</th>
+                </tr>
               </thead>
               <tbody>
-                {recentCerts.map(cert => (
+                {filteredRecentCerts.map(cert => (
                   <tr key={cert.id}>
+                    <td style={{ width: '40px', textAlign: 'center' }}>
+                      <input
+                        type="checkbox"
+                        checked={selectedCerts.has(cert.id)}
+                        onChange={() => toggleCertSelect(cert.id)}
+                      />
+                    </td>
                     <td>#{cert.certificate_id?.toUpperCase()}</td>
                     <td>{editingCert === cert.id ? <input className="edit-input" value={editFormData.full_name} onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} /> : cert.full_name}</td>
                     <td>{editingCert === cert.id ? <input className="edit-input" value={editFormData.course} onChange={e => setEditFormData({ ...editFormData, course: e.target.value })} /> : cert.course}</td>
+                    <td>
+                      {editingCert === cert.id ? (
+                        <select className="edit-input" value={editFormData.owner} onChange={e => setEditFormData({ ...editFormData, owner: e.target.value })}>
+                          <option value="">Unassigned</option>
+                          {users.map((user) => (
+                            <option key={user.id} value={String(user.id)}>{getUserLabel(user)}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        getOwnerDisplay(cert)
+                      )}
+                    </td>
                     <td>
                       <div className="action-buttons">
                         {editingCert === cert.id ? (
                           <><button className="save-btn" onClick={() => handleSaveEdit(cert.id)}>Save</button><button className="cancel-btn" onClick={() => setEditingCert(null)}>Cancel</button></>
                         ) : (
-                          <><button className="edit-btn" onClick={() => { setEditingCert(cert.id); setEditFormData({ full_name: cert.full_name, course: cert.course }) }}>Edit</button><button className="delete-btn" onClick={() => handleDelete(cert.id, 'cert')}>Delete</button></>
+                          <>
+                            <button className="edit-btn" onClick={() => { setEditingCert(cert.id); setEditFormData({ full_name: cert.full_name, course: cert.course, owner: getOwnerId(cert) }) }}>Edit</button>
+                            <button className="view-file-btn" onClick={() => downloadSinglePDF(cert)} disabled={downloadingCerts}>Download</button>
+                            <button className="delete-btn" onClick={() => handleDelete(cert.id, 'cert')}>Delete</button>
+                          </>
                         )}
                       </div>
                     </td>
