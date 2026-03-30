@@ -1,3 +1,27 @@
+/* Kulay Palette:
+   Blue: #0D1282
+   White: #EEEDED
+   Yellow: #F0DE36
+   Red: #D71313
+*/
+
+/* MAKE PAGE FULL HEIGHT */
+html, body {
+  height: 100%;
+}
+
+/* MAIN CONTAINER FIX */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* PUSH FOOTER DOWN */
+footer {
+  margin-top: auto;
+}
+
 /* 1. Reset and Fonts */
 * {
   margin: 0;
@@ -8,34 +32,36 @@
 body {
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.6;
-  color: #2d3436;
-  /* Added a subtle gradient to the body to make glass stand out */
-  background: radial-gradient(circle at top right, #e0eafc, #f9f9f9);
+  color: #0D1282; /* Deep Blue text for better readability */
+  background-color: #EEEDED; /* Light school grey/white */
+  background-image: radial-gradient(circle at top right, #ffffff, #EEEDED);
   min-height: 100vh;
 }
 
 /* 2. Hero Section (Header) */
 header {
-  background: linear-gradient(135deg, #5396ca 0%, #080042 100%);
-  color: white;
+  /* Dynamic gradient using your School Blue and a darker shade */
+  background: linear-gradient(135deg, #0D1282 0%, #05084d 100%);
+  color: #EEEDED;
   padding: 120px 20px;
   text-align: center;
   position: relative;
   overflow: hidden;
-  clip-path: ellipse(150% 100% at 50% 0%);
+  /* Mas modernong kurba */
+  border-bottom: 8px solid #F0DE36; /* Yellow Accent Line */
 }
 
-/* Optional: Adding a floating "blob" behind the glass to show off the blur */
+/* Floating "School Spirit" Glow */
 header::before {
   content: '';
   position: absolute;
-  top: 20%;
-  left: 10%;
-  width: 150px;
-  height: 150px;
-  background: rgba(255, 255, 255, 0.1);
+  top: -10%;
+  right: -5%;
+  width: 300px;
+  height: 300px;
+  background: rgba(240, 222, 54, 0.15); /* Subtle Yellow Glow */
   border-radius: 50%;
-  filter: blur(50px);
+  filter: blur(80px);
 }
 
 header h1 {
@@ -43,6 +69,8 @@ header h1 {
   margin-bottom: 1rem;
   font-weight: 800;
   letter-spacing: -1px;
+  color: #FFFFFF;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 header p {
@@ -51,6 +79,7 @@ header p {
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
+  color: #EEEDED;
   opacity: 0.9;
 }
 
@@ -64,90 +93,88 @@ header div div {
 
 /* Glass Buttons */
 button {
-  padding: 14px 28px;
+  padding: 14px 32px;
   font-size: 1rem;
-  font-weight: 600;
-  border-radius: 50px;
+  font-weight: 700;
+  border-radius: 8px; /* Mas formal na school look (slight rounded) */
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  border: 1px solid rgba(255, 255, 255, 0.4); /* Glass Border */
+  border: none;
 }
 
 header button {
-  /* Semi-transparent white */
-  background: rgba(255, 255, 255, 0.2); 
-  color: white;
-  /* The Magic Sparkle */
-  backdrop-filter: blur(10px); 
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: #F0DE36; /* Prominent Yellow Button */
+  color: #0D1282;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* secondary button logic if needed - applying Red to a second button */
+header button:nth-child(2) {
+  background: #D71313;
+  color: #ffffff;
 }
 
 header button:hover {
   transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  filter: brightness(1.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-/* 3. Features Section - GLASS CARDS */
+/* 3. Features Section - CLEAN CARDS */
 section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
   max-width: 1200px;
-  margin: -60px auto 80px; 
+  margin: 60px auto 80px; 
   padding: 0 20px;
   position: relative;
   z-index: 10;
 }
 
 section div {
-  /* Transparent Background */
-  background: rgba(255, 255, 255, 0.7); 
+  background: #ffffff; 
   padding: 40px 30px;
-  border-radius: 20px;
+  border-radius: 12px;
   text-align: center;
-  
-  /* Glass Morphism Essentials */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5); 
-  
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-top: 5px solid #0D1282; /* School Blue Border */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
 section div:hover {
-  transform: translateY(-12px);
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #1e4d63;
-  box-shadow: 0 15px 45px rgba(108, 92, 231, 0.15);
+  transform: translateY(-10px);
+  border-top-color: #D71313; /* Switches to Red on hover */
+  box-shadow: 0 15px 35px rgba(13, 18, 130, 0.1);
 }
 
 section h3 {
-  font-size: 1.5rem;
-  color: #2d3436;
+  font-size: 1.6rem;
+  color: #0D1282;
   margin-bottom: 15px;
+  font-weight: 700;
 }
 
 section p {
-  color: #636e72;
+  color: #555555;
   font-size: 1rem;
 }
 
 /* 4. Footer */
 footer {
   text-align: center;
-  padding: 60px 20px;
-  background-color: #2d3436;
-  color: #dfe6e9;
+  padding: 40px 20px;
+  background-color: #0D1282; /* Primary School Blue */
+  color: #EEEDED;
+  border-top: 4px solid #D71313; /* Red accent line */
 }
 
 footer p {
   font-size: 0.9rem;
-  opacity: 0.7;
+  opacity: 0.8;
+  letter-spacing: 0.5px;
 }
 
 /* Responsive */
@@ -157,5 +184,6 @@ footer p {
   }
   header {
     padding: 80px 20px;
+    clip-path: none; /* Simplier on mobile */
   }
 }

@@ -48,7 +48,7 @@ const VerifyPage = () => {
 
             <div className="glass-container">
                 <button className="back-btn" onClick={() => navigate(-1)}>
-                    ← Back to Home
+                    Back
                 </button>
 
                 <div className="verify-card">

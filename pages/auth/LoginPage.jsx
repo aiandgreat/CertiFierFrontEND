@@ -71,7 +71,7 @@ const LoginPage = () => {
       {showSuccessToast && (
         <div className="success-toast">
           <div className="toast-content">
-            <span className="toast-icon">🔑</span>
+            <span className="toast-icon"></span>
             <div className="toast-text">
               <strong>Login Successful!</strong>
               <p>Welcome back, {localStorage.getItem('user_name') || 'User'}!</p>
@@ -85,7 +85,7 @@ const LoginPage = () => {
       {showErrorToast && (
         <div className="error-toast">
           <div className="toast-content">
-            <span className="toast-icon">❌</span>
+            <span className="toast-icon"></span>
             <div className="toast-text">
               <strong>Login Failed</strong>
               <p>{error}</p>
@@ -96,7 +96,7 @@ const LoginPage = () => {
       )}
 
       <button className="back-btn" onClick={() => navigate(-1)}>
-        ← Back
+        Back
       </button>
 
       <div className="auth-card">
