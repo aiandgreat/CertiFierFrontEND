@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './CSVUploadPage.css';
 
+// Mas maganda kung gagawin nating variable ang Base URL para iisang lugar lang ang babaguhin
+const API_BASE = 'https://certifierbackend.onrender.com';
+
 const CSVUploadPage = () => {
   const navigate = useNavigate();
   const [csvFile, setCsvFile] = useState(null);
@@ -17,7 +20,8 @@ const CSVUploadPage = () => {
     const fetchTemplates = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('https://certifierbackend.onrender.com/api/templates/', {
+        // FIX: Ginagamit ang API_BASE variable
+        const response = await axios.get(`${API_BASE}/api/templates/`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -66,8 +70,9 @@ const CSVUploadPage = () => {
     try {
       const token = localStorage.getItem('token');
 
+      // FIX: Siguradong tama ang endpoint para sa pag-create
       const createResponse = await axios.post(
-        'https://certifierbackend.onrender.com/api/uploads/create/',
+        `${API_BASE}/api/uploads/create/`,
         formData,
         {
           headers: {
@@ -78,8 +83,9 @@ const CSVUploadPage = () => {
 
       const uploadId = createResponse.data.id;
 
+      // FIX: Tinanggal ang double slash at siniguradong may trailing slash sa dulo
       await axios.post(
-        `https://certifierbackend.onrender.com/api/uploads/${uploadId}/process/`,
+        `${API_BASE}/api/uploads/${uploadId}/process/`,
         {},
         {
           headers: {
@@ -130,7 +136,6 @@ const CSVUploadPage = () => {
 
   return (
     <div className="upload-page-container">
-      {/* Back Button */}
       <button className="back-btn" onClick={() => navigate(-1)}>
         Back
       </button>
