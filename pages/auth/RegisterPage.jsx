@@ -6,7 +6,7 @@ import CertiLogo from '../../src/Images/CertiLogo.png';
 
 
 const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
-const API_BASE = 'http://127.0.0.1:8000';
+const API_BASE = 'https://certifierfrontend.onrender.com';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ const RegisterPage = () => {
 
     try {
       // Sending data that matches your Django view requirements
-      await axios.post('http://127.0.0.1:8000/api/auth/register/', {
+      await axios.post('https://certifierfrontend.onrender.com/api/auth/register/', {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
