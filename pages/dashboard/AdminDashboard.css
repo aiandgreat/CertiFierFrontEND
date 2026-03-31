@@ -444,6 +444,18 @@
   text-align: center  ;
 }
 
+.Logo-Container {
+    display: flex;
+   flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.Logo {
+    width: 150px;
+    margin-bottom: 30px;
+}
+
 /* Animation para sa pagpasok ng Toast */
 @keyframes slideInRight {
   from {

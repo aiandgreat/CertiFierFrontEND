@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './StudentDashboard.css';
-
+import CertiLogo from '../../src/Images/CertiLogo.png';
 const API_BASE = "http://127.0.0.1:8000";
 
 const StudentDashboard = () => {
@@ -94,7 +94,9 @@ const StudentDashboard = () => {
 
       {/* SIDEBAR */}
       <aside className="student-sidebar">
-        <h2>CertiFier</h2>
+        <div className='Logo-Container'>
+                  <img className='Logo' src={CertiLogo} alt="Certifier Logo" />
+                </div>
 
         <nav className="student-nav">
           <Link to="/StudentDashboard" className="student-nav-link active">

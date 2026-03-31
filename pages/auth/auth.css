@@ -1,4 +1,4 @@
-/* COLORS:
+/* COLORS PALETTE:
    Blue: #0D1282 | Yellow: #F0DE36 | White: #EEEDED
    Red: #D71313 | Success Green: #22c55e
 */
@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Dark Gradient Background para hindi masakit sa mata */
+  /* Dark Gradient Background */
   background: 
     radial-gradient(at 0% 0%, rgba(13, 18, 130, 0.3) 0px, transparent 50%), 
     radial-gradient(at 100% 0%, rgba(240, 222, 54, 0.05) 0px, transparent 40%),
@@ -20,13 +20,14 @@
   position: relative;
 }
 
-/* 2. Main White Modal Wrapper */
+/* 2. Main White Modal Wrapper - FIXED SIZE FOR CONSISTENCY */
 .auth-split-wrapper {
   display: flex;
   width: 100%;
   max-width: 1100px;
-  min-height: 650px; 
-  background: #ffffff; /* Solid White Modal */
+  /* Mahalaga: Fixed height para pareho ang sukat ng Login at Register */
+  height: 720px; 
+  background: #ffffff;
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
@@ -41,15 +42,30 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   border-right: 5px solid #F0DE36;
+  text-align: center;
 }
 
 .auth-info-section.register-theme {
-  background: linear-gradient(135deg, #0D1282 0%, #1e25b3 100%);
+  /* Parehong kulay sa Login para hindi nakakalito */
+  background: linear-gradient(135deg, #0D1282 0%, #090c5c 100%);
+}
+
+.LogoLoginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.LogoLogin {
+  width: 220px;
+  height: auto;
 }
 
 .info-content h1 {
-  font-size: 3rem;
+  font-size: 2.8rem;
   margin-bottom: 20px;
   font-weight: 800;
   color: #F0DE36;
@@ -59,21 +75,14 @@
   font-size: 1.1rem;
   line-height: 1.6;
   opacity: 0.9;
-  text-align: center;
   margin-bottom: 30px;
 }
-
-.info-content{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 
 .info-graphic {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .info-graphic span {
@@ -91,9 +100,10 @@
   flex: 1;
   padding: 40px 60px;
   display: flex;
-  align-items: center;
+  align-items: center; /* Laging nasa gitna ang form vertically */
   justify-content: center;
   background-color: #ffffff;
+  overflow-y: auto; /* Mag-scroll ang form kung sakaling sobrang haba ng Register */
 }
 
 .auth-card {
@@ -118,32 +128,32 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: 12px;
 }
 
 .form-group label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   color: #0D1282;
   text-transform: uppercase;
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 11px 16px;
   border: 2px solid #f3f4f6;
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   background: #f9fafb;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 
 .form-group input:focus {
@@ -155,20 +165,9 @@
 
 .input-hint {
   display: block;
-  margin-top: 6px;
-  font-size: 0.78rem;
+  margin-top: 4px;
+  font-size: 0.75rem;
   color: #6b7280;
-}
-
-.error-inline {
-  margin-bottom: 14px;
-  background: #fff1f2;
-  border: 1px solid #fecdd3;
-  color: #b91c1c;
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-size: 0.88rem;
-  font-weight: 600;
 }
 
 /* 6. Buttons & Links */
@@ -196,15 +195,13 @@
 .auth-divider {
   position: relative;
   text-align: center;
-  margin: 8px 0;
+  margin: 10px 0;
 }
 
 .auth-divider::before {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
+  top: 50%; left: 0; right: 0;
   height: 1px;
   background: #e5e7eb;
 }
@@ -215,34 +212,28 @@
   color: #9ca3af;
   font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
   padding: 0 12px;
 }
 
 .google-auth-btn {
   width: 100%;
-  padding: 12px 14px;
+  padding: 12px;
   border: 1px solid #d1d5db;
   border-radius: 12px;
   background: #ffffff;
   color: #111827;
-  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .google-auth-btn:hover {
-  border-color: #9ca3af;
-  box-shadow: 0 6px 14px rgba(17, 24, 39, 0.08);
-  transform: translateY(-1px);
-}
-
-.google-auth-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+  background-color: #f9fafb;
+  border-color: #0D1282;
 }
 
 .back-btn {
@@ -257,7 +248,6 @@
   border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
   z-index: 10;
 }
 
@@ -267,103 +257,36 @@
 }
 
 .auth-footer p {
-  margin-top: 25px;
+  margin-top: 20px;
   text-align: center;
   font-size: 0.9rem;
   color: #6b7280;
 }
 
 .auth-footer a {
-  color: #D71313;
+  color: #D71313; /* Red Link */
   font-weight: 700;
   text-decoration: none;
 }
 
-/* 7. TOAST MESSAGES (WHITE MODAL STYLE) */
-
-/* Common Toast Styles */
+/* 7. Toast Messages */
 .success-toast, .error-toast {
   position: fixed;
   top: 30px;
   right: 30px;
-  background: #ffffff !important; /* Force White Background */
+  background: #ffffff !important;
   min-width: 320px;
   padding: 18px 25px;
   border-radius: 16px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: slideIn 0.5s ease-out;
 }
 
-.LogoLoginContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-.LogoLogin {
+.success-toast { border-left: 8px solid #22c55e; }
+.error-toast { border-left: 8px solid #D71313; }
 
-  padding: 0;
-  width: 200px;
-  height: auto;
-  margin-bottom: 20px;
-}
-
-/* Success Specific (Green) */
-.success-toast {
-  border-left: 8px solid #22c55e;
-}
-.success-toast strong { color: #22c55e; font-size: 1.1rem; }
-
-/* Error Specific (Red) */
-.error-toast {
-  border-left: 8px solid #D71313;
-}
-.error-toast strong { color: #D71313; font-size: 1.1rem; }
-
-/* Toast Text */
-.toast-text p {
-  color: #4b5563;
-  margin: 4px 0 0 0;
-  font-size: 0.9rem;
-}
-
-/* Progress Bars */
-.toast-progress, .toast-progress-error {
-  position: absolute;
-  bottom: 0;
-  left: 8px;
-  height: 4px;
-  width: calc(100% - 8px);
-  background: #f3f4f6;
-  border-bottom-right-radius: 16px;
-  overflow: hidden;
-}
-
-.toast-progress::after {
-  content: "";
-  position: absolute;
-  left: 0; top: 0; height: 100%; width: 100%;
-  background: #22c55e;
-  animation: progressAnim 3s linear forwards;
-}
-
-.toast-progress-error::after {
-  content: "";
-  position: absolute;
-  left: 0; top: 0; height: 100%; width: 100%;
-  background: #D71313;
-  animation: progressAnim 3s linear forwards;
-}
-
-/* 8. Animations & Media Queries */
-@keyframes progressAnim {
-  from { width: 100%; }
-  to { width: 0%; }
-}
-
+/* 8. Animations & Responsive */
 @keyframes slideIn {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
@@ -372,13 +295,13 @@
 @media (max-width: 900px) {
   .auth-split-wrapper {
     flex-direction: column;
-    min-height: auto;
+    height: auto; /* Hayaan itong humaba sa mobile */
+    min-height: 100vh;
   }
   .auth-info-section {
     padding: 40px;
     border-right: none;
     border-bottom: 5px solid #F0DE36;
-    text-align: center;
   }
   .auth-form-section { padding: 40px 20px; }
 }

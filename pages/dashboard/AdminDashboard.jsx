@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import JSZip from 'jszip';
 import './AdminDashboard.css';
+import CertiLogo from '../../src/Images/CertiLogo.png';
+
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -16,8 +18,8 @@ const AdminDashboard = () => {
   const [editingCert, setEditingCert] = useState(null);
   const [editFormData, setEditFormData] = useState({ full_name: '', course: '', owner: '' });
   const [editingUser, setEditingUser] = useState(null);
-  const [editUserFormData, setEditUserFormData] = useState({ 
-    first_name: '', last_name: '', email: '', username: '', role: '' 
+  const [editUserFormData, setEditUserFormData] = useState({
+    first_name: '', last_name: '', email: '', username: '', role: ''
   });
 
   // UI States
@@ -131,7 +133,7 @@ const AdminDashboard = () => {
 
   const handleDelete = (id, type) => {
     let url = `${API_BASE}/api/${type === 'cert' ? 'certificates' : type + 's'}/${id}/`;
-    
+
     setModal({
       show: true,
       title: 'Confirm Delete',
@@ -234,7 +236,7 @@ const AdminDashboard = () => {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(fileURL);
-      
+
       showToast(`Downloaded ${selectedCerts.size} certificate(s) as zip`);
       setSelectedCerts(new Set());
     } catch (error) {
@@ -255,7 +257,9 @@ const AdminDashboard = () => {
       )}
 
       <aside className="admin-sidebar">
-        <h2>CertiFier</h2>
+        <div className='Logo-Container'>
+          <img className='Logo' src={CertiLogo} alt="Certifier Logo" />
+        </div>
         <nav className="admin-nav">
           <Link to="/AdminDashboard" className="admin-nav-link active">Overview</Link>
           <Link to="/UploadTemplate" className="admin-nav-link">Templates</Link>
@@ -292,9 +296,9 @@ const AdminDashboard = () => {
               <tbody>
                 {users.filter(u => (u.first_name + ' ' + u.last_name).toLowerCase().includes(userSearch.toLowerCase())).map(user => (
                   <tr key={user.id}>
-                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.first_name} onChange={e => setEditUserFormData({...editUserFormData, first_name: e.target.value})} /> : user.first_name}</td>
-                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.last_name} onChange={e => setEditUserFormData({...editUserFormData, last_name: e.target.value})} /> : user.last_name}</td>
-                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.email} onChange={e => setEditUserFormData({...editUserFormData, email: e.target.value})} /> : user.email}</td>
+                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.first_name} onChange={e => setEditUserFormData({ ...editUserFormData, first_name: e.target.value })} /> : user.first_name}</td>
+                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.last_name} onChange={e => setEditUserFormData({ ...editUserFormData, last_name: e.target.value })} /> : user.last_name}</td>
+                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.email} onChange={e => setEditUserFormData({ ...editUserFormData, email: e.target.value })} /> : user.email}</td>
                     <td><span className={`badge ${user.role === 'admin' ? 'invalid' : 'valid'}`}>{user.role?.toUpperCase()}</span></td>
                     <td>
                       <div className="action-buttons">
@@ -302,7 +306,7 @@ const AdminDashboard = () => {
                           <><button className="save-btn" onClick={() => handleSaveUserEdit(user.id)}>Save</button><button className="cancel-btn" onClick={() => setEditingUser(null)}>Cancel</button></>
                         ) : (
                           <><button className="edit-btn" onClick={() => { setEditingUser(user.id); setEditUserFormData({ first_name: user.first_name, last_name: user.last_name, email: user.email, username: user.username, role: user.role }); }}>Edit</button>
-                          {user.role !== 'admin' && <button className="delete-btn" onClick={() => handleDelete(user.id, 'user')}>Delete</button>}</>
+                            {user.role !== 'admin' && <button className="delete-btn" onClick={() => handleDelete(user.id, 'user')}>Delete</button>}</>
                         )}
                       </div>
                     </td>
