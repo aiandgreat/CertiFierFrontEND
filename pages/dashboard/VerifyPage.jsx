@@ -4,6 +4,9 @@ import axios from 'axios';
 import './VerifyPage.css';
 import CertiLogo from '../../src/Images/CertiLogo.png';
 
+// I-define ang Base URL para iwas error sa typos
+const API_BASE = 'https://certifierbackend.onrender.com';
+
 const VerifyPage = () => {
     const navigate = useNavigate();
     const [certId, setCertId] = useState('');
@@ -12,7 +15,6 @@ const VerifyPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // Cleanup function para burahin ang Blob URL sa memory kapag inalis ang component
     useEffect(() => {
         return () => {
             if (pdfBlobUrl) {
@@ -23,7 +25,9 @@ const VerifyPage = () => {
 
     const handleVerify = async (e) => {
         e.preventDefault();
-        if (!certId.trim()) {
+        
+        const trimmedId = certId.trim();
+        if (!trimmedId) {
             setError("Please enter a Certificate ID.");
             return;
         }
@@ -32,43 +36,48 @@ const VerifyPage = () => {
         setError('');
         setResult(null);
         
-        // Burahin ang lumang blob URL bago ang bagong request
         if (pdfBlobUrl) {
             window.URL.revokeObjectURL(pdfBlobUrl);
             setPdfBlobUrl(null);
         }
 
-        const formattedId = certId.trim().toUpperCase();
+        const formattedId = trimmedId.toUpperCase();
 
         try {
-            // 1. API Call para i-verify ang certificate details
-            const response = await axios.get(`https://certifierbackend.onrender.com/api/verify/${formattedId}/`);
+            // 1. API Call: Siguraduhing may trailing slash sa dulo (Django requirement)
+            const response = await axios.get(`${API_BASE}/api/verify/${formattedId}/`);
             
-            if (response.data.status === 'VALID') {
-                setResult(response.data);
+            // Note: Depende sa Django view mo, baka response.data agad ang object
+            const data = response.data;
 
-                // 2. Fetch PDF as Blob para ma-bypass ang X-Frame-Options
-                if (response.data.file_url) {
+            if (data && (data.status === 'VALID' || data.full_name)) {
+                setResult(data);
+
+                // 2. Fetch PDF as Blob
+                if (data.file_url) {
                     try {
-                        const pdfRes = await axios.get(response.data.file_url, {
-                            responseType: 'blob'
+                        const pdfRes = await axios.get(data.file_url, {
+                            responseType: 'blob',
+                            // Tanggalin muna ang Authorization header dito kung ang file_url ay external (S3/Cloudinary)
+                            // para iwas CORS preflight error
                         });
                         const blob = new Blob([pdfRes.data], { type: 'application/pdf' });
                         const url = window.URL.createObjectURL(blob);
                         setPdfBlobUrl(url);
                     } catch (pdfErr) {
                         console.error("PDF Preview Error:", pdfErr);
-                        // Optional: Tuloy pa rin kahit walang preview
+                        // Hahayaan nating result lang ang makita kung ayaw mag-load ng PDF
                     }
                 }
             } else {
-                setError(response.data.status || "Invalid certificate.");
+                setError("Certificate details are incomplete or invalid.");
             }
         } catch (err) {
+            console.error("Verification Error:", err);
             if (err.response?.status === 404) {
-                setError(`Certificate "${formattedId}" not found.`);
+                setError(`Certificate "${formattedId}" not found in our database.`);
             } else {
-                setError("Connection error. Please check your backend.");
+                setError("Server error. Please try again later.");
             }
         } finally {
             setLoading(false);
@@ -80,7 +89,6 @@ const VerifyPage = () => {
             <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
 
             <div className="auth-split-wrapper glass-effect">
-                {/* LEFT SIDE: Form & Input */}
                 <div className="verify-left">
                     <div className="info-content">
                         <div className='Logo-Container'>
@@ -100,20 +108,19 @@ const VerifyPage = () => {
                                 />
                             </div>
                             <button type="submit" className="verify-btn" disabled={loading}>
-                                {loading ? 'Checking Database...' : 'Verify Now'}
+                                {loading ? 'Checking...' : 'Verify Now'}
                             </button>
                         </form>
                     </div>
                 </div>
 
-                {/* RIGHT SIDE: Results & Preview */}
                 <div className="verify-right">
                     <div className="result-container">
                         {!result && !error && (
                             <div className="empty-state">
                                 <div className="search-icon-placeholder">🔍</div>
                                 <p>Waiting for verification...</p>
-                                <span>Results will appear here once verified.</span>
+                                <span>Results will appear here.</span>
                             </div>
                         )}
 
@@ -125,50 +132,51 @@ const VerifyPage = () => {
                             </div>
                         )}
 
-                        {result && result.status === 'VALID' && (
+                        {result && (
                             <div className="result-box valid">
                                 <div className="status-header">
                                     <span className="status-icon">✅</span>
                                     <div>
                                         <h3>Verified Successfully</h3>
-                                        <small>{result.certificate_id}</small>
+                                        <small>{result.certificate_id || formattedId}</small>
                                     </div>
                                 </div>
 
-                                {/* PDF PREVIEW SECTION */}
                                 <div className="pdf-preview-wrapper">
                                     {pdfBlobUrl ? (
                                         <iframe
-                                            src={`${pdfBlobUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                                            src={`${pdfBlobUrl}#toolbar=0`}
                                             title="Certificate PDF"
                                             className="pdf-iframe"
                                         ></iframe>
                                     ) : (
                                         <div className="pdf-loader">
-                                            {loading ? "Fetching Document..." : "Generating Preview..."}
+                                            {loading ? "Fetching Document..." : "Document Preview Unavailable"}
                                         </div>
                                     )}
-                                    <a href={result.file_url} target="_blank" rel="noreferrer" className="fullscreen-link">
-                                        Download / View Original PDF ↗
-                                    </a>
+                                    {result.file_url && (
+                                        <a href={result.file_url} target="_blank" rel="noreferrer" className="fullscreen-link">
+                                            Download / View Original PDF ↗
+                                        </a>
+                                    )}
                                 </div>
 
                                 <div className="cert-grid">
                                     <div className="grid-item">
                                         <span>Full Name</span>
-                                        <p>{result.full_name}</p>
+                                        <p>{result.full_name || 'N/A'}</p>
                                     </div>
                                     <div className="grid-item">
                                         <span>Course/Event</span>
-                                        <p>{result.course}</p>
+                                        <p>{result.course || result.event_name || 'N/A'}</p>
                                     </div>
                                     <div className="grid-item">
                                         <span>Issued By</span>
-                                        <p>{result.issued_by}</p>
+                                        <p>{result.issued_by || 'University Administrator'}</p>
                                     </div>
                                     <div className="grid-item">
                                         <span>Date Issued</span>
-                                        <p>{result.date_issued}</p>
+                                        <p>{result.date_issued || 'N/A'}</p>
                                     </div>
                                 </div>
                             </div>
