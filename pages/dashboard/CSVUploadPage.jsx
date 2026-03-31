@@ -79,7 +79,7 @@ const CSVUploadPage = () => {
       const uploadId = createResponse.data.id;
 
       await axios.post(
-        `https://certifierbackend.onrender.com//api/uploads/${uploadId}/process/`,
+        `https://certifierbackend.onrender.com/api/uploads/${uploadId}/process/`,
         {},
         {
           headers: {
