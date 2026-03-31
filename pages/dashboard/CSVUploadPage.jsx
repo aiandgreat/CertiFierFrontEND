@@ -17,7 +17,7 @@ const CSVUploadPage = () => {
     const fetchTemplates = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://127.0.0.1:8000/api/templates/', {
+        const response = await axios.get('https://certifierfrontend.onrender.com/api/templates/', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -67,7 +67,7 @@ const CSVUploadPage = () => {
       const token = localStorage.getItem('token');
 
       const createResponse = await axios.post(
-        'http://127.0.0.1:8000/api/uploads/create/',
+        'https://certifierfrontend.onrender.com/api/uploads/create/',
         formData,
         {
           headers: {
@@ -79,7 +79,7 @@ const CSVUploadPage = () => {
       const uploadId = createResponse.data.id;
 
       await axios.post(
-        `http://127.0.0.1:8000/api/uploads/${uploadId}/process/`,
+        `https://certifierfrontend.onrender.com/api/uploads/${uploadId}/process/`,
         {},
         {
           headers: {

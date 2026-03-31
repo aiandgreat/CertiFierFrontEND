@@ -25,7 +25,7 @@ const CertificateCard = ({ cert }) => {
     setLoadingPdf(true);
     try {
       // Note: Ensure the URL ends with a slash / to match Django's urls.py
-      const response = await axios.get(`http://127.0.0.1:8000/api/certificates/${cert.id}/download/`, {
+      const response = await axios.get(`https://certifierfrontend.onrender.com/api/certificates/${cert.id}/download/`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob' // Essential for PDF files
       });
@@ -67,7 +67,7 @@ const CertificateCard = ({ cert }) => {
     setVerifying(true);
     try {
       // Using the certificate_id string for verification as per your urls.py
-      const response = await axios.get(`http://127.0.0.1:8000/api/verify/${cert.certificate_id}/`, {
+      const response = await axios.get(`https://certifierfrontend.onrender.com/api/verify/${cert.certificate_id}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setVerifyStatus(response.data);

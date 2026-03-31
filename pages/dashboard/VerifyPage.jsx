@@ -42,7 +42,7 @@ const VerifyPage = () => {
 
         try {
             // 1. API Call para i-verify ang certificate details
-            const response = await axios.get(`http://localhost:8000/api/verify/${formattedId}/`);
+            const response = await axios.get(`https://certifierfrontend.onrender.com/api/verify/${formattedId}/`);
             
             if (response.data.status === 'VALID') {
                 setResult(response.data);

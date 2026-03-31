@@ -196,7 +196,7 @@ const UploadTemplatePage = () => {
     formData.append('placeholders', JSON.stringify({ version: 1, markers: payloadMarkers }));
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://127.0.0.1:8000/api/templates/', formData, {
+      const response = await axios.post('https://certifierfrontend.onrender.com/api/templates/', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.status === 201 || response.status === 200) {
