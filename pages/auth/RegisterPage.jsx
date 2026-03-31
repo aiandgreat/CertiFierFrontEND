@@ -52,7 +52,7 @@ const RegisterPage = () => {
 
     try {
       // Sending data that matches your Django view requirements
-      await axios.post('https://certifierfrontend.onrender.com/api/auth/register/', {
+      await axios.post('https://certifierbackend.onrender.com/api/auth/register/', {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
