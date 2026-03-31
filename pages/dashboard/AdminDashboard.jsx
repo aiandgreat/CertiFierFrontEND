@@ -32,7 +32,7 @@ const AdminDashboard = () => {
   const [downloadingCerts, setDownloadingCerts] = useState(false);
 
   const token = localStorage.getItem('token');
-  const API_BASE = "https://certifierfrontend.onrender.com";
+  const API_BASE = "https://certifierbackend.onrender.com";
 
   useEffect(() => {
     fetchData();

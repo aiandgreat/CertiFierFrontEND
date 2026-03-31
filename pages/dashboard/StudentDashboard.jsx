@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './StudentDashboard.css';
 import CertiLogo from '../../src/Images/CertiLogo.png';
-const API_BASE = "https://certifierfrontend.onrender.com";
+const API_BASE = "https://certifierbackend.onrender.com/";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
