@@ -1,17 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './App.css'; 
+import './App.css';
 import uaLogo from './Images/UALOGO.png';
+import CertiLogo from '../src/Images/CertiLogo.png';
 
 const HomePage = () => {
   return (
     <div className="home-container">
       <header>
         <div className="hero-content">
-          <img className="logo" src={uaLogo} alt="UA LOGO" />
+          <div className='LOGOS'>
+            <img className="logo" src={CertiLogo} alt="CertiFier Logo" />
+            <img className="logo" src={uaLogo} alt="UA LOGO" />
+          </div>
           <h1>CertiFier</h1>
           <p>University of the Assumption's First Automated Certificate Generation and Verification system.</p>
-          
+
           <div className="cta-buttons">
             <Link to="/register">
               <button>Register</button>
