@@ -128,7 +128,7 @@ const RegisterPage = () => {
         </div>
       )}
 
-      <button className="back-btn" onClick={() => navigate('/HomePage')}>Back</button>
+      <button className="back-btn" onClick={() => navigate('/')}>Back</button>
 
       <div className="auth-split-wrapper">
         {/* LEFT SIDE: Info Section */}

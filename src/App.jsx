@@ -15,13 +15,21 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/HomePage" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/login/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/register/" element={<RegisterPage />} />
         <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/verify/" element={<VerifyPage />} />
         <Route path="/AdminDashboard" element={<AdminDashboard />} />
+        <Route path="/AdminDashboard/" element={<AdminDashboard />} />
         <Route path="/StudentDashboard" element={<StudentDashboard />} />
+        <Route path="/StudentDashboard/" element={<StudentDashboard />} />
         <Route path="/UploadTemplate" element={<UploadTemplatePage />} />
+        <Route path="/UploadTemplate/" element={<UploadTemplatePage />} />
         <Route path="/CSVUpload" element={<CSVUploadPage />} />
+        <Route path="/CSVUpload/" element={<CSVUploadPage />} />
         <Route path="*" element={<HomePage />} />
 
       </Routes>
