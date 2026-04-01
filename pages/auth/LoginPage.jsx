@@ -34,14 +34,14 @@ const LoginPage = () => {
 
   const redirectByRole = (role) => {
     if (role === 'admin') {
-      navigate('/AdminDashboard');
+      navigate('/AdminDashboard', { replace: true });
       return;
     }
-    navigate('/StudentDashboard');
+    navigate('/StudentDashboard', { replace: true });
   };
 
   const handleGoogleLogin = () => {
-    const returnTo = `${window.location.origin}/login`;
+    const returnTo = `${window.location.origin}/login?from=register`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
   };
@@ -58,36 +58,26 @@ const LoginPage = () => {
       setError(authError);
       setShowErrorToast(true);
       setTimeout(() => setShowErrorToast(false), 4000);
+      window.history.replaceState({}, document.title, '/login'); // prevent loop
       return;
     }
 
     if (!access || !role) return;
 
-    // Set origin flag to display correct toast message
     setIsFromRegister(fromReg);
 
     localStorage.setItem('access', access);
     localStorage.setItem('token', access);
-    if (role) {
-      localStorage.setItem('role', role);
-      localStorage.setItem('user_role', role);
-    }
-    if (fullName) {
-      localStorage.setItem('full_name', fullName);
-      localStorage.setItem('user_name', fullName);
-    }
+    localStorage.setItem('role', role);
+    localStorage.setItem('user_role', role);
+    localStorage.setItem('full_name', fullName);
+    localStorage.setItem('user_name', fullName);
 
     setShowSuccessToast(true);
-    
-    // If from register, give it more time to show the message
+    window.history.replaceState({}, document.title, '/login'); // prevent loop
+
     const delay = fromReg ? 2500 : 1200;
-    const timer = setTimeout(() => {
-      if (role === 'admin') {
-        navigate('/AdminDashboard', { replace: true });
-        return;
-      }
-      navigate('/StudentDashboard', { replace: true });
-    }, delay);
+    const timer = setTimeout(() => redirectByRole(role), delay);
 
     return () => clearTimeout(timer);
   }, [location.search, location.hash, navigate]);
@@ -96,7 +86,7 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     setShowErrorToast(false);
-    setIsFromRegister(false); // Reset to normal login message
+    setIsFromRegister(false);
 
     if (!isSchoolEmail(email)) {
       setError('Only @ua.edu.ph email addresses are allowed.');
@@ -109,8 +99,8 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(`${API_BASE}/api/auth/login/`, {
-        email: email, 
-        password: password
+        email, 
+        password
       });
 
       const { access, role, full_name } = response.data;
@@ -136,17 +126,12 @@ const LoginPage = () => {
 
   return (
     <div className="auth-container">
-      {/* TOAST NOTIFICATIONS */}
       {showSuccessToast && (
         <div className="success-toast">
           <div className="toast-content">
             <div className="toast-text">
               <strong>{isFromRegister ? "Registration Successful!" : "Login Successful!"}</strong>
-              <p>
-                {isFromRegister 
-                  ? `Welcome to Certifier, ${localStorage.getItem('user_name') || 'User'}!` 
-                  : `Welcome back, ${localStorage.getItem('user_name') || 'User'}!`}
-              </p>
+              <p>{isFromRegister ? `Welcome to Certifier, ${localStorage.getItem('user_name') || 'User'}!` : `Welcome back, ${localStorage.getItem('user_name') || 'User'}!`}</p>
             </div>
           </div>
           <div className="toast-progress"></div>
@@ -171,13 +156,13 @@ const LoginPage = () => {
         <div className="auth-info-section">
           <div className="info-content">
             <div className='LogoLoginContainer'>
-            <img className = 'LogoLogin' src={CertiLogo} alt="Certifier Logo" />
+              <img className='LogoLogin' src={CertiLogo} alt="Certifier Logo" />
             </div>
             <p>The fastest and most secure way to manage your digital certificates and academic credentials.</p>
             <div className="info-graphic">
-               <span>✓ Verified</span>
-               <span>✓ Secure</span>
-               <span>✓ Accessible</span>
+              <span>✓ Verified</span>
+              <span>✓ Secure</span>
+              <span>✓ Accessible</span>
             </div>
           </div>
         </div>
