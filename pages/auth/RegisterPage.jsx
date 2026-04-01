@@ -62,10 +62,6 @@ const RegisterPage = () => {
       // Clear URL to prevent loops if user refreshes
       window.history.replaceState({}, document.title, '/register');
 
-      setTimeout(() => {
-        navigate('/login');
-      }, 2500);
-
     } catch (err) {
       const errorDetail = err.response?.data?.error || err.response?.data?.detail || "Registration failed.";
       setError(errorDetail);
@@ -76,15 +72,21 @@ const RegisterPage = () => {
 
   return (
     <div className="auth-container">
+
+      {/* ✅ SUCCESS MODAL */}
       {showSuccess && (
-        <div className="success-toast">
-          <div className="toast-content">
-            <div className="toast-text">
-              <strong>Account Created!</strong>
-              <p>Redirecting to login page...</p>
-            </div>
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-icon">✅</div>
+            <h2>Account Created!</h2>
+            <p>Your account has been successfully registered.</p>
+            <button
+              className="modal-btn"
+              onClick={() => navigate('/login')}
+            >
+              Go to Login
+            </button>
           </div>
-          <div className="toast-progress"></div>
         </div>
       )}
 
