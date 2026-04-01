@@ -46,29 +46,26 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    const params = getOAuthParams();
+    const params = new URLSearchParams(window.location.search);
     const access = params.get('access');
     const role = params.get('role');
     const fullName = params.get('full_name');
-    const authError = params.get('error');
 
-    if (authError) {
-      setError(authError);
-      setShowErrorToast(true);
-      setTimeout(() => setShowErrorToast(false), 4000);
-      return;
+    if (!access) return;
+
+    localStorage.setItem('access', access);
+    localStorage.setItem('token', access);
+    if (role) {
+      localStorage.setItem('role', role);
+      localStorage.setItem('user_role', role);
+    }
+    if (fullName) {
+      localStorage.setItem('full_name', fullName);
+      localStorage.setItem('user_name', fullName);
     }
 
-    if (!access || !role) return;
-
-    localStorage.setItem('token', access);
-    localStorage.setItem('user_role', role);
-    localStorage.setItem('user_name', fullName || 'User');
-    setShowSuccessToast(true);
-
-    // Remove sensitive query params from URL before redirect.
     window.history.replaceState({}, document.title, '/login');
-    setTimeout(() => redirectByRole(role), 1200);
+    navigate('/HomePage');
   }, [location.search, navigate]);
 
   const handleLogin = async (e) => {
