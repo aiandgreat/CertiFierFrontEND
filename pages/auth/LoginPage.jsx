@@ -37,12 +37,13 @@ const LoginPage = () => {
   };
 
   const handleGoogleLogin = () => {
-    const returnTo = `${window.location.origin}/#/login?from=register`;
+    const returnTo = `${window.location.origin}/#/login`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
   };
 
   useEffect(() => {
+    setIsFromRegister(false);
     const params = getOAuthParams();
     const access = params.get('access');
     const role = params.get('role');
@@ -54,7 +55,7 @@ const LoginPage = () => {
       setError(authError);
       setShowErrorToast(true);
       setTimeout(() => setShowErrorToast(false), 4000);
-      navigate('/login', { replace: true });
+      window.history.replaceState({}, document.title, `${window.location.origin}/#/login`);
       return;
     }
 
@@ -75,10 +76,9 @@ const LoginPage = () => {
 
     setShowSuccessToast(true);
 
-    // CLEAR query/hash params so this useEffect won't trigger again
-    navigate('/login', { replace: true });
+    // Clear OAuth params without triggering a router navigation rerender loop.
+    window.history.replaceState({}, document.title, `${window.location.origin}/#/login`);
 
-    // If callback came from register flow, remain on login page.
     if (fromReg) {
       return;
     }
