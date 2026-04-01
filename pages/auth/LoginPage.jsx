@@ -28,6 +28,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
+  const [isFromRegister, setIsFromRegister] = useState(false);
 
   const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
 
@@ -51,6 +52,7 @@ const LoginPage = () => {
     const role = params.get('role');
     const fullName = params.get('full_name');
     const authError = params.get('error');
+    const fromReg = params.get('from') === 'register';
 
     if (authError) {
       setError(authError);
@@ -60,6 +62,9 @@ const LoginPage = () => {
     }
 
     if (!access) return;
+
+    // Set origin flag to display correct toast message
+    setIsFromRegister(fromReg);
 
     localStorage.setItem('access', access);
     localStorage.setItem('token', access);
@@ -72,15 +77,20 @@ const LoginPage = () => {
       localStorage.setItem('user_name', fullName);
     }
 
+    // Clean URL
     window.history.replaceState({}, document.title, '/login');
     setShowSuccessToast(true);
-    setTimeout(() => redirectByRole(role), 1200);
+    
+    // If from register, give it more time to show the message
+    const delay = fromReg ? 2500 : 1200;
+    setTimeout(() => redirectByRole(role), delay);
   }, [location.search, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setShowErrorToast(false);
+    setIsFromRegister(false); // Reset to normal login message
 
     if (!isSchoolEmail(email)) {
       setError('Only @ua.edu.ph email addresses are allowed.');
@@ -106,7 +116,6 @@ const LoginPage = () => {
       localStorage.setItem('user_name', full_name);
 
       setShowSuccessToast(true);
-
       setTimeout(() => redirectByRole(role), 2000);
 
     } catch (err) {
@@ -126,8 +135,12 @@ const LoginPage = () => {
         <div className="success-toast">
           <div className="toast-content">
             <div className="toast-text">
-              <strong>Login Successful!</strong>
-              <p>Welcome back, {localStorage.getItem('user_name') || 'User'}!</p>
+              <strong>{isFromRegister ? "Registration Successful!" : "Login Successful!"}</strong>
+              <p>
+                {isFromRegister 
+                  ? `Welcome to Certifier, ${localStorage.getItem('user_name') || 'User'}!` 
+                  : `Welcome back, ${localStorage.getItem('user_name') || 'User'}!`}
+              </p>
             </div>
           </div>
           <div className="toast-progress"></div>
@@ -149,7 +162,6 @@ const LoginPage = () => {
       <button className="back-btn" onClick={() => navigate('/')}>Back</button>
 
       <div className="auth-split-wrapper">
-        {/* LEFT SIDE: System Description */}
         <div className="auth-info-section">
           <div className="info-content">
             <div className='LogoLoginContainer'>
@@ -164,7 +176,6 @@ const LoginPage = () => {
           </div>
         </div>
 
-        {/* RIGHT SIDE: Login Form */}
         <div className="auth-form-section">
           <div className="auth-card">
             <div className="auth-header">

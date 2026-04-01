@@ -4,7 +4,6 @@ import axios from 'axios';
 import './auth.css';
 import CertiLogo from '../../src/Images/CertiLogo.png';
 
-
 const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
 const API_BASE = 'https://certifierbackend.onrender.com';
 
@@ -24,7 +23,8 @@ const RegisterPage = () => {
   const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
 
   const handleGoogleSignup = () => {
-    const returnTo = `${window.location.origin}/login`;
+    // Nagdagdag ng query parameter na 'from=register' para malaman ng Login page ang state
+    const returnTo = `${window.location.origin}/login?from=register`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
   };
@@ -36,7 +36,6 @@ const RegisterPage = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Client-side validation
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
       return;
@@ -51,24 +50,20 @@ const RegisterPage = () => {
     setError('');
 
     try {
-      // Sending data that matches your Django view requirements
-      await axios.post('https://certifierbackend.onrender.com/api/auth/register/', {
+      await axios.post(`${API_BASE}/api/auth/register/`, {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
         password: formData.password,
-        role: 'student' // Default role
+        role: 'student'
       });
 
       setShowSuccess(true);
-
-      // Redirect to login after success
       setTimeout(() => {
         navigate('/login');
       }, 2500);
 
     } catch (err) {
-      // Capture the specific error message from Django
       const errorDetail = err.response?.data?.error || err.response?.data?.detail || "Registration failed.";
       setError(errorDetail);
     } finally {
@@ -78,7 +73,6 @@ const RegisterPage = () => {
 
   return (
     <div className="auth-container">
-      {/* SUCCESS TOAST */}
       {showSuccess && (
         <div className="success-toast">
           <div className="toast-content">
@@ -94,7 +88,6 @@ const RegisterPage = () => {
       <button className="back-btn" onClick={() => navigate('/')}>Back</button>
 
       <div className="auth-split-wrapper">
-        {/* LEFT SIDE: Info Section */}
         <div className="auth-info-section register-theme">
           <div className="info-content">
             <div className='LogoLoginContainer'>
@@ -103,14 +96,13 @@ const RegisterPage = () => {
             <h1>Join Us Today</h1>
             <p>Start organizing your certificates and credentials in one secure location.</p>
             <div className="info-graphic">
-              <span>✓ Free Account</span>
-              <span>✓ EdDSA</span>
-              <span>✓ Data Privacy</span>
+               <span>✓ Free Account</span>
+               <span>✓ EdDSA</span>
+               <span>✓ Data Privacy</span>
             </div>
           </div>
         </div>
 
-        {/* RIGHT SIDE: Register Form */}
         <div className="auth-form-section">
           <div className="auth-card">
             <div className="auth-header">
