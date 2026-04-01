@@ -329,21 +329,22 @@ const AdminDashboard = () => {
               {templates.filter(t => t.name.toLowerCase().includes(templateSearch.toLowerCase())).map(template => (
                 console.log("TEMPLATE:", template),
                 console.log("BACKGROUND:", template.background),
-              <div key={template.id} className="template-card">
-                <div className="template-preview">
-                  <img
-                    src={template.background?.url || template.background}
-                    alt={template.name}
-                    onError={(e) =>
-                      (e.target.src = "https://via.placeholder.com/200x140?text=Error+Loading")
-                    }
-                  />
+                <div key={template.id} className="template-card">
+                  <div className="template-preview">
+                    <img
+                      src={template.background}
+                      alt={template.name}
+                      onError={(e) => {
+                        console.log("FAILED IMAGE:", template.background);
+                        e.target.src = "https://dummyimage.com/200x140/cccccc/000000&text=No+Image";
+                      }}
+                    />
+                  </div>
+                  <div className="template-info">
+                    <h4>{template.name}</h4>
+                    <button className="delete-btn-sm" onClick={() => handleDelete(template.id, 'template')}>Delete</button>
+                  </div>
                 </div>
-                <div className="template-info">
-                  <h4>{template.name}</h4>
-                  <button className="delete-btn-sm" onClick={() => handleDelete(template.id, 'template')}>Delete</button>
-                </div>
-              </div>
               ))}
             </div>
           )}
