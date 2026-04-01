@@ -71,6 +71,13 @@ const AdminDashboard = () => {
   const getFullUrl = (path) => {
     if (!path) return "https://via.placeholder.com/200x140?text=No+Image";
     if (path.startsWith('http')) return path;
+
+    // Siguraduhin na kasama ang /media/ kung wala ito sa path
+    if (!path.includes('/media/') && !path.startsWith('media/')) {
+      const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+      return `${API_BASE}/media/${cleanPath}`;
+    }
+
     const cleanPath = path.startsWith('/') ? path.substring(1) : path;
     return `${API_BASE}/${cleanPath}`;
   };
