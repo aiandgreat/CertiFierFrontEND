@@ -13,9 +13,8 @@ const getOAuthParams = () => {
 
   const hash = window.location.hash || '';
   const qIndex = hash.indexOf('?');
-  if (qIndex >= 0) {
-    return new URLSearchParams(hash.slice(qIndex + 1));
-  }
+  if (qIndex >= 0) return new URLSearchParams(hash.slice(qIndex + 1));
+
   return new URLSearchParams();
 };
 
@@ -32,6 +31,20 @@ const RegisterPage = () => {
   const [error, setError] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
+  const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
+
+  const redirectByRole = (role) => {
+    if (role === 'admin') navigate('/AdminDashboard');
+    else navigate('/StudentDashboard');
+  };
+
+  const handleGoogleSignup = () => {
+    const returnTo = `${window.location.origin}/login`;
+    const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
+    window.location.href = googleUrl;
+  };
+
+  // Handle OAuth redirect
   useEffect(() => {
     const params = getOAuthParams();
     const access = params.get('access');
@@ -50,42 +63,26 @@ const RegisterPage = () => {
     localStorage.setItem('user_role', role);
     localStorage.setItem('user_name', fullName || 'User');
 
-    if (role === 'admin') {
-      navigate('/AdminDashboard');
-      return;
-    }
-    navigate('/StudentDashboard');
+    window.history.replaceState({}, document.title, '/register');
+    redirectByRole(role);
   }, [navigate]);
 
-  const isSchoolEmail = (value) =>
-    value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
-
-  const handleGoogleSignup = () => {
-    const returnTo = `${window.location.origin}/login`;
-    const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
-    window.location.href = googleUrl;
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError('');
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
       return;
     }
-
     if (!isSchoolEmail(formData.email)) {
       setError('Only @ua.edu.ph email addresses are allowed.');
       return;
     }
 
     setLoading(true);
-    setError('');
-
     try {
       await axios.post(`${API_BASE}/api/auth/register/`, {
         first_name: formData.firstName,
@@ -96,11 +93,7 @@ const RegisterPage = () => {
       });
 
       setShowSuccess(true);
-
-      setTimeout(() => {
-        navigate('/login');
-      }, 2500);
-
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       const errorDetail = err.response?.data?.error || err.response?.data?.detail || "Registration failed.";
       setError(errorDetail);
@@ -152,77 +145,22 @@ const RegisterPage = () => {
 
             <form className="auth-form" onSubmit={handleRegister}>
               <div className="form-row" style={{ display: 'flex', gap: '10px' }}>
-                <div className="form-group" style={{ flex: 1 }}>
-                  <label>First Name</label>
-                  <input
-                    name="firstName"
-                    type="text"
-                    placeholder="John"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="form-group" style={{ flex: 1 }}>
-                  <label>Last Name</label>
-                  <input
-                    name="lastName"
-                    type="text"
-                    placeholder="Doe"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+                <input name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} required />
+                <input name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} required />
               </div>
 
-              <div className="form-group">
-                <label>Email Address</label>
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="name@ua.edu.ph"
-                  value={formData.email}
-                  onChange={handleChange}
-                  pattern="^[A-Za-z0-9._%+\-]+@ua\.edu\.ph$"
-                  title="Use your school email ending with @ua.edu.ph"
-                  required
-                />
-                <small className="input-hint">Registration is limited to UA school emails (@ua.edu.ph).</small>
-              </div>
+              <input name="email" type="email" placeholder="name@ua.edu.ph" value={formData.email} onChange={handleChange} required />
+              <input name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
+              <input name="confirmPassword" type="password" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required />
 
-              <div className="form-group">
-                <label>Password</label>
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Confirm Password</label>
-                <input
-                  name="confirmPassword"
-                  type="password"
-                  placeholder="••••••••"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <button type="submit" className="auth-submit" disabled={loading || showSuccess}>
+              <button type="submit" disabled={loading || showSuccess}>
                 {loading ? "Creating Account..." : "Register Now"}
               </button>
 
               <div className="auth-divider"><span>OR</span></div>
 
               <button type="button" className="google-auth-btn" onClick={handleGoogleSignup} disabled={loading || showSuccess}>
-                Signup with Google
+                Sign up with Google
               </button>
             </form>
 
