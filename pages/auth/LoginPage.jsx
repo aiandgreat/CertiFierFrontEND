@@ -46,10 +46,18 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = getOAuthParams();
     const access = params.get('access');
     const role = params.get('role');
     const fullName = params.get('full_name');
+    const authError = params.get('error');
+
+    if (authError) {
+      setError(authError);
+      setShowErrorToast(true);
+      setTimeout(() => setShowErrorToast(false), 4000);
+      return;
+    }
 
     if (!access) return;
 
@@ -65,7 +73,8 @@ const LoginPage = () => {
     }
 
     window.history.replaceState({}, document.title, '/login');
-    navigate('/HomePage');
+    setShowSuccessToast(true);
+    setTimeout(() => redirectByRole(role), 1200);
   }, [location.search, navigate]);
 
   const handleLogin = async (e) => {
@@ -89,8 +98,11 @@ const LoginPage = () => {
       });
 
       const { access, role, full_name } = response.data;
+      localStorage.setItem('access', access);
       localStorage.setItem('token', access);
+      localStorage.setItem('role', role);
       localStorage.setItem('user_role', role);
+      localStorage.setItem('full_name', full_name);
       localStorage.setItem('user_name', full_name);
 
       setShowSuccessToast(true);
