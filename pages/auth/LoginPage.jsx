@@ -11,9 +11,10 @@ const getOAuthParams = () => {
   const normal = new URLSearchParams(window.location.search);
   if (normal.get('access')) return normal;
 
-  const hash = window.location.hash.slice(1);
-  if (hash) {
-    return new URLSearchParams(hash);
+  const hash = window.location.hash || '';
+  const qIndex = hash.indexOf('?');
+  if (qIndex >= 0) {
+    return new URLSearchParams(hash.slice(qIndex + 1));
   }
   return new URLSearchParams();
 };
@@ -36,7 +37,7 @@ const LoginPage = () => {
   };
 
   const handleGoogleLogin = () => {
-    const returnTo = `${window.location.origin}/login?from=register`;
+    const returnTo = `${window.location.origin}/#/login?from=register`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
   };
@@ -53,7 +54,7 @@ const LoginPage = () => {
       setError(authError);
       setShowErrorToast(true);
       setTimeout(() => setShowErrorToast(false), 4000);
-      window.history.replaceState({}, document.title, '/login'); // <-- CLEAR URL PARAMS
+      navigate('/login', { replace: true });
       return;
     }
 
@@ -75,7 +76,7 @@ const LoginPage = () => {
     setShowSuccessToast(true);
 
     // CLEAR query/hash params so this useEffect won't trigger again
-    window.history.replaceState({}, document.title, '/login');
+    navigate('/login', { replace: true });
 
     // If callback came from register flow, remain on login page.
     if (fromReg) {

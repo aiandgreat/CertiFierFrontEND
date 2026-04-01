@@ -24,7 +24,7 @@ const RegisterPage = () => {
   const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
 
   const handleGoogleSignup = () => {
-    const returnTo = `${window.location.origin}/login?from=register`;
+    const returnTo = `${window.location.origin}/#/login?from=register`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
   };
