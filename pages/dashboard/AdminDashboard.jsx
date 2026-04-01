@@ -341,7 +341,7 @@ const AdminDashboard = () => {
               {templates.filter(t => t.name.toLowerCase().includes(templateSearch.toLowerCase())).map(template => (
                 <div key={template.id} className="template-card">
                   <div className="template-preview">
-                    <img src={getFullUrl(template.background)} alt={template.name} onError={(e) => e.target.src = "https://via.placeholder.com/200x140?text=Error+Loading"} />
+                    <img src={getFullUrl(template.background)} alt={template.name} onError={(e) => { console.log("Error loading image from:", e.target.src); e.target.src = "https://via.placeholder.com/200x140?text=Error+Loading"; }} />
                   </div>
                   <div className="template-info">
                     <h4>{template.name}</h4>
