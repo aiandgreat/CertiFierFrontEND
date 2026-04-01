@@ -251,7 +251,7 @@ const AdminDashboard = () => {
     <div className="admin-container">
       {toast.show && (
         <div className="delete-success-toast">
-          <span className="toast-icon">✅</span>
+          <span className="toast-icon"> </span>
           <p>{toast.message}</p>
         </div>
       )}
