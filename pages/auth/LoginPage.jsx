@@ -40,7 +40,7 @@ const LoginPage = () => {
   };
 
   const handleGoogleLogin = () => {
-    const returnTo = `${window.location.origin}/login?from=register`;
+    const returnTo = `${window.location.origin}/register`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
   };

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './auth.css';
 import CertiLogo from '../../src/Images/CertiLogo.png';
@@ -7,20 +7,8 @@ import CertiLogo from '../../src/Images/CertiLogo.png';
 const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
 const API_BASE = 'https://certifierbackend.onrender.com';
 
-const getOAuthParams = () => {
-  const normal = new URLSearchParams(window.location.search);
-  if (normal.get('access')) return normal;
-
-  const hash = window.location.hash.slice(1);
-  if (hash) {
-    return new URLSearchParams(hash);
-  }
-  return new URLSearchParams();
-};
-
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -30,59 +18,16 @@ const RegisterPage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  
 
   const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
 
-  const redirectByRole = (role) => {
-    if (role === 'admin') {
-      navigate('/AdminDashboard', { replace: true });
-      return;
-    }
-    navigate('/StudentDashboard', { replace: true });
-  };
-
   const handleGoogleSignup = () => {
-    const returnTo = `${window.location.origin}/register`;
+    const returnTo = `${window.location.origin}/login?from=register`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
   };
-
-  useEffect(() => {
-    const params = getOAuthParams();
-    const access = params.get('access');
-    const role = params.get('role');
-    const fullName = params.get('full_name');
-    const authError = params.get('error');
-
-    if (authError) {
-      setError(authError);
-      setShowErrorToast(true);
-      setTimeout(() => setShowErrorToast(false), 4000);
-      window.history.replaceState({}, document.title, '/register');
-      return;
-    }
-
-    if (!access || !role) return;
-
-    localStorage.setItem('access', access);
-    localStorage.setItem('token', access);
-    if (role) {
-      localStorage.setItem('role', role);
-      localStorage.setItem('user_role', role);
-    }
-    if (fullName) {
-      localStorage.setItem('full_name', fullName);
-      localStorage.setItem('user_name', fullName);
-    }
-
-    setShowSuccessToast(true);
-
-    window.history.replaceState({}, document.title, '/register');
-
-    setTimeout(() => redirectByRole(role), 2500);
-  }, [location.search, location.hash, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
