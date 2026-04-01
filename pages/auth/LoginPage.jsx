@@ -46,15 +46,17 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    // Read OAuth params from either search or hash (some providers return tokens in the fragment)
+    const params = getOAuthParams();
     const access = params.get('access');
     const role = params.get('role');
     const fullName = params.get('full_name');
 
     if (!access) return;
 
-    localStorage.setItem('access', access);
+    // Normalize storage keys used across the app
     localStorage.setItem('token', access);
+    localStorage.setItem('access', access);
     if (role) {
       localStorage.setItem('role', role);
       localStorage.setItem('user_role', role);
@@ -64,8 +66,19 @@ const LoginPage = () => {
       localStorage.setItem('user_name', fullName);
     }
 
-    window.history.replaceState({}, document.title, '/login');
-    navigate('/HomePage');
+    // Clean up the URL (remove tokens) and redirect to proper dashboard
+    try {
+      window.history.replaceState({}, document.title, '/login');
+    } catch (err) {
+      // ignore - some environments may restrict replaceState
+    }
+
+    // Redirect to dashboard according to role when available
+    if (role) {
+      redirectByRole(role);
+    } else {
+      navigate('/');
+    }
   }, [location.search, navigate]);
 
   const handleLogin = async (e) => {
