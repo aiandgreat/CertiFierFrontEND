@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './auth.css'; 
+import './auth.css';
 import CertiLogo from '../../src/Images/CertiLogo.png';
 
 const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
@@ -21,7 +21,6 @@ const getOAuthParams = () => {
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -32,8 +31,14 @@ const LoginPage = () => {
 
   const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
 
-  const redirectByRole = () => {
-    navigate('/StudentDashboard', { replace: true });
+  const redirectByRole = (role) => {
+    const userRole = role || localStorage.getItem('user_role');
+
+    if (userRole === 'admin') {
+      navigate('/AdminDashboard', { replace: true });
+    } else {
+      navigate('/StudentDashboard', { replace: true });
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -85,7 +90,7 @@ const LoginPage = () => {
 
     const timer = setTimeout(() => redirectByRole(), 1200);
     return () => clearTimeout(timer);
-  }, [location.search, location.hash, navigate]);
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -104,7 +109,7 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(`${API_BASE}/api/auth/login/`, {
-        email: email, 
+        email: email,
         password: password
       });
 
@@ -137,8 +142,8 @@ const LoginPage = () => {
             <div className="toast-text">
               <strong>{isFromRegister ? "Registration Successful!" : "Login Successful!"}</strong>
               <p>
-                {isFromRegister 
-                  ? `Welcome to Certifier, ${localStorage.getItem('user_name') || 'User'}!` 
+                {isFromRegister
+                  ? `Welcome to Certifier, ${localStorage.getItem('user_name') || 'User'}!`
                   : `Welcome back, ${localStorage.getItem('user_name') || 'User'}!`}
               </p>
             </div>
@@ -169,9 +174,9 @@ const LoginPage = () => {
             </div>
             <p>The fastest and most secure way to manage your digital certificates and academic credentials.</p>
             <div className="info-graphic">
-               <span>✓ Verified</span>
-               <span>✓ Secure</span>
-               <span>✓ Accessible</span>
+              <span>✓ Verified</span>
+              <span>✓ Secure</span>
+              <span>✓ Accessible</span>
             </div>
           </div>
         </div>
@@ -186,26 +191,26 @@ const LoginPage = () => {
             <form className="auth-form" onSubmit={handleLogin}>
               <div className="form-group">
                 <label>Email Address</label>
-                <input 
-                  type="email" 
-                  placeholder="name@ua.edu.ph" 
+                <input
+                  type="email"
+                  placeholder="name@ua.edu.ph"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   pattern="^[A-Za-z0-9._%+\-]+@ua\.edu\.ph$"
                   title="Use your school email ending with @ua.edu.ph"
-                  required 
+                  required
                 />
                 <small className="input-hint">Use your UA school email (@ua.edu.ph).</small>
               </div>
 
               <div className="form-group">
                 <label>Password</label>
-                <input 
-                  type="password" 
-                  placeholder="••••••••" 
+                <input
+                  type="password"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required 
+                  required
                 />
               </div>
 
@@ -217,10 +222,10 @@ const LoginPage = () => {
 
               <button type="button" className="google-auth-btn" onClick={handleGoogleLogin} disabled={loading || showSuccessToast}>
                 <svg width="22" height="22" viewBox="0 0 48 48" aria-label="Google" role="img">
-                  <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.233 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.841 1.154 7.959 3.041l5.657-5.657C34.047 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
-                  <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.841 1.154 7.959 3.041l5.657-5.657C34.047 6.053 29.27 4 24 4c-7.682 0-14.347 4.337-17.694 10.691z"/>
-                  <path fill="#4CAF50" d="M24 44c5.164 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.144 35.091 26.715 36 24 36c-5.212 0-9.619-3.329-11.283-7.946l-6.522 5.024C9.5 39.556 16.227 44 24 44z"/>
-                  <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.084 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+                  <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.233 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.841 1.154 7.959 3.041l5.657-5.657C34.047 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
+                  <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.841 1.154 7.959 3.041l5.657-5.657C34.047 6.053 29.27 4 24 4c-7.682 0-14.347 4.337-17.694 10.691z" />
+                  <path fill="#4CAF50" d="M24 44c5.164 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.144 35.091 26.715 36 24 36c-5.212 0-9.619-3.329-11.283-7.946l-6.522 5.024C9.5 39.556 16.227 44 24 44z" />
+                  <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.084 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z" />
                 </svg>
               </button>
             </form>
