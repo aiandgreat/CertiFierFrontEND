@@ -61,7 +61,7 @@ const LoginPage = () => {
       return;
     }
 
-    if (!access) return;
+    if (!access || !role) return;
 
     // Set origin flag to display correct toast message
     setIsFromRegister(fromReg);
@@ -77,14 +77,20 @@ const LoginPage = () => {
       localStorage.setItem('user_name', fullName);
     }
 
-    // Clean URL
-    window.history.replaceState({}, document.title, '/login');
     setShowSuccessToast(true);
     
     // If from register, give it more time to show the message
     const delay = fromReg ? 2500 : 1200;
-    setTimeout(() => redirectByRole(role), delay);
-  }, [location.search, navigate]);
+    const timer = setTimeout(() => {
+      if (role === 'admin') {
+        navigate('/AdminDashboard', { replace: true });
+        return;
+      }
+      navigate('/StudentDashboard', { replace: true });
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [location.search, location.hash, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
