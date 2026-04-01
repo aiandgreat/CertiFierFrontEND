@@ -31,16 +31,12 @@ const LoginPage = () => {
 
   const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
 
-  const redirectByRole = (role) => {
-    if (role === 'admin') {
-      navigate('/AdminDashboard', { replace: true });
-      return;
-    }
+  const redirectByRole = () => {
     navigate('/StudentDashboard', { replace: true });
   };
 
   const handleGoogleLogin = () => {
-    const returnTo = `${window.location.origin}/register`;
+    const returnTo = `${window.location.origin}/login`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
   };
@@ -61,7 +57,7 @@ const LoginPage = () => {
       return;
     }
 
-    if (!access || !role) return;
+    if (!access) return;
 
     setIsFromRegister(fromReg);
 
@@ -81,9 +77,12 @@ const LoginPage = () => {
     // CLEAR query/hash params so this useEffect won't trigger again
     window.history.replaceState({}, document.title, '/login');
 
-    const delay = fromReg ? 2500 : 1200;
-    const timer = setTimeout(() => redirectByRole(role), delay);
+    // If callback came from register flow, remain on login page.
+    if (fromReg) {
+      return;
+    }
 
+    const timer = setTimeout(() => redirectByRole(), 1200);
     return () => clearTimeout(timer);
   }, [location.search, location.hash, navigate]);
 
@@ -117,7 +116,7 @@ const LoginPage = () => {
       localStorage.setItem('user_name', full_name);
 
       setShowSuccessToast(true);
-      setTimeout(() => redirectByRole(role), 2000);
+      setTimeout(() => redirectByRole(), 2000);
 
     } catch (err) {
       const errorMsg = err.response?.data?.detail || "Invalid email or password.";
