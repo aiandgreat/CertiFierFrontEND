@@ -11,10 +11,9 @@ const getOAuthParams = () => {
   const normal = new URLSearchParams(window.location.search);
   if (normal.get('access')) return normal;
 
-  const hash = window.location.hash || '';
-  const qIndex = hash.indexOf('?');
-  if (qIndex >= 0) {
-    return new URLSearchParams(hash.slice(qIndex + 1));
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    return new URLSearchParams(hash);
   }
   return new URLSearchParams();
 };
