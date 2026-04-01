@@ -69,18 +69,23 @@ const AdminDashboard = () => {
   };
 
   const getFullUrl = (path) => {
-    if (!path) return "https://via.placeholder.com/200x140?text=No+Image";
-    if (path.startsWith('http')) return path;
+  // 1. Kung walang path, magpakita ng placeholder
+  if (!path) return "https://via.placeholder.com/200x140?text=No+Image";
 
-    // Siguraduhin na kasama ang /media/ kung wala ito sa path
-    if (!path.includes('/media/') && !path.startsWith('media/')) {
-      const cleanPath = path.startsWith('/') ? path.substring(1) : path;
-      return `${API_BASE}/media/${cleanPath}`;
-    }
+  // 2. IMPORTANT: Kung ang path ay nagsisimula na sa http (Cloudinary URL), 
+  // ibalik ito agad at huwag nang dagdagan ng API_BASE.
+  if (path.startsWith('http')) return path;
 
-    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
-    return `${API_BASE}/${cleanPath}`;
-  };
+  // 3. Para sa mga lumang uploads o local files na hindi pa naka-Cloudinary
+  const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+
+  // Siguraduhin na may '/media/' sa URL kung ito ay local file path
+  if (!cleanPath.startsWith('media/')) {
+    return `${API_BASE}/media/${cleanPath}`;
+  }
+
+  return `${API_BASE}/${cleanPath}`;
+};
 
   const showToast = (message) => {
     setToast({ show: true, message });
