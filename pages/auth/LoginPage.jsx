@@ -58,7 +58,7 @@ const LoginPage = () => {
       setError(authError);
       setShowErrorToast(true);
       setTimeout(() => setShowErrorToast(false), 4000);
-      window.history.replaceState({}, document.title, '/login'); // prevent loop
+      window.history.replaceState({}, document.title, '/login'); // <-- CLEAR URL PARAMS
       return;
     }
 
@@ -68,13 +68,19 @@ const LoginPage = () => {
 
     localStorage.setItem('access', access);
     localStorage.setItem('token', access);
-    localStorage.setItem('role', role);
-    localStorage.setItem('user_role', role);
-    localStorage.setItem('full_name', fullName);
-    localStorage.setItem('user_name', fullName);
+    if (role) {
+      localStorage.setItem('role', role);
+      localStorage.setItem('user_role', role);
+    }
+    if (fullName) {
+      localStorage.setItem('full_name', fullName);
+      localStorage.setItem('user_name', fullName);
+    }
 
     setShowSuccessToast(true);
-    window.history.replaceState({}, document.title, '/login'); // prevent loop
+
+    // CLEAR query/hash params so this useEffect won't trigger again
+    window.history.replaceState({}, document.title, '/login');
 
     const delay = fromReg ? 2500 : 1200;
     const timer = setTimeout(() => redirectByRole(role), delay);
@@ -99,8 +105,8 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(`${API_BASE}/api/auth/login/`, {
-        email, 
-        password
+        email: email, 
+        password: password
       });
 
       const { access, role, full_name } = response.data;
@@ -131,7 +137,11 @@ const LoginPage = () => {
           <div className="toast-content">
             <div className="toast-text">
               <strong>{isFromRegister ? "Registration Successful!" : "Login Successful!"}</strong>
-              <p>{isFromRegister ? `Welcome to Certifier, ${localStorage.getItem('user_name') || 'User'}!` : `Welcome back, ${localStorage.getItem('user_name') || 'User'}!`}</p>
+              <p>
+                {isFromRegister 
+                  ? `Welcome to Certifier, ${localStorage.getItem('user_name') || 'User'}!` 
+                  : `Welcome back, ${localStorage.getItem('user_name') || 'User'}!`}
+              </p>
             </div>
           </div>
           <div className="toast-progress"></div>
@@ -160,9 +170,9 @@ const LoginPage = () => {
             </div>
             <p>The fastest and most secure way to manage your digital certificates and academic credentials.</p>
             <div className="info-graphic">
-              <span>✓ Verified</span>
-              <span>✓ Secure</span>
-              <span>✓ Accessible</span>
+               <span>✓ Verified</span>
+               <span>✓ Secure</span>
+               <span>✓ Accessible</span>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './auth.css';
@@ -23,7 +23,6 @@ const RegisterPage = () => {
   const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
 
   const handleGoogleSignup = () => {
-    // Add query parameter 'from=register' so LoginPage knows it came from registration
     const returnTo = `${window.location.origin}/login?from=register`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
@@ -59,7 +58,10 @@ const RegisterPage = () => {
       });
 
       setShowSuccess(true);
-      window.history.replaceState({}, document.title, '/register'); // prevent OAuth loop
+
+      // Clear URL to prevent loops if user refreshes
+      window.history.replaceState({}, document.title, '/register');
+
       setTimeout(() => {
         navigate('/login');
       }, 2500);
