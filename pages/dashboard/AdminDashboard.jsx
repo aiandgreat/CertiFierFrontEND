@@ -332,7 +332,7 @@ const AdminDashboard = () => {
                 <div key={template.id} className="template-card">
                   <div className="template-preview">
                     <img
-                      src={template.background}
+                      src={getFullUrl(template.background)}
                       alt={template.name}
                       onError={(e) => {
                         console.log("FAILED IMAGE:", template.background);
