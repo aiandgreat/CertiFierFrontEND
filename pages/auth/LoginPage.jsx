@@ -7,6 +7,18 @@ import CertiLogo from '../../src/Images/CertiLogo.png';
 const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
 const API_BASE = 'https://certifierbackend.onrender.com';
 
+const getOAuthParams = () => {
+  const normal = new URLSearchParams(window.location.search);
+  if (normal.get('access')) return normal;
+
+  const hash = window.location.hash || '';
+  const qIndex = hash.indexOf('?');
+  if (qIndex >= 0) {
+    return new URLSearchParams(hash.slice(qIndex + 1));
+  }
+  return new URLSearchParams();
+};
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,7 +46,7 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
+    const params = getOAuthParams();
     const access = params.get('access');
     const role = params.get('role');
     const fullName = params.get('full_name');

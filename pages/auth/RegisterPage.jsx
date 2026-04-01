@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './auth.css';
@@ -7,6 +7,18 @@ import CertiLogo from '../../src/Images/CertiLogo.png';
 
 const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
 const API_BASE = 'https://certifierbackend.onrender.com';
+
+const getOAuthParams = () => {
+  const normal = new URLSearchParams(window.location.search);
+  if (normal.get('access')) return normal;
+
+  const hash = window.location.hash || '';
+  const qIndex = hash.indexOf('?');
+  if (qIndex >= 0) {
+    return new URLSearchParams(hash.slice(qIndex + 1));
+  }
+  return new URLSearchParams();
+};
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -20,6 +32,31 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    const params = getOAuthParams();
+    const access = params.get('access');
+    const role = params.get('role');
+    const fullName = params.get('full_name');
+    const authError = params.get('error');
+
+    if (authError) {
+      setError(authError);
+      return;
+    }
+
+    if (!access || !role) return;
+
+    localStorage.setItem('token', access);
+    localStorage.setItem('user_role', role);
+    localStorage.setItem('user_name', fullName || 'User');
+
+    if (role === 'admin') {
+      navigate('/AdminDashboard');
+      return;
+    }
+    navigate('/StudentDashboard');
+  }, [navigate]);
 
   const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
 
