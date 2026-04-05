@@ -2,11 +2,12 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './StudentDashboard.css';
-import CertiLogo from '../../src/Images/CertiLogo.png';
-const API_BASE = "https://certifierbackend.onrender.com";
+
+const API_BASE = "http://127.0.0.1:8000";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [myCerts, setMyCerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [previewPdfUrl, setPreviewPdfUrl] = useState(null);
@@ -43,6 +44,8 @@ const StudentDashboard = () => {
     localStorage.clear();
     navigate('/login');
   };
+
+  const closeMobileNav = () => setIsMobileNavOpen(false);
 
   const handlePreview = async (cert) => {
     try {
@@ -92,17 +95,31 @@ const StudentDashboard = () => {
   return (
     <div className="student-container">
 
+      <button
+        className="mobile-menu-toggle"
+        type="button"
+        onClick={() => setIsMobileNavOpen((open) => !open)}
+        aria-label="Toggle navigation menu"
+        aria-expanded={isMobileNavOpen}
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+
+      {isMobileNavOpen && (
+        <div className="mobile-menu-overlay" onClick={closeMobileNav} />
+      )}
+
       {/* SIDEBAR */}
-      <aside className="student-sidebar">
-        <div className='Logo-Container'>
-                  <img className='Logo' src={CertiLogo} alt="Certifier Logo" />
-                </div>
+      <aside className={`student-sidebar ${isMobileNavOpen ? 'open' : ''}`}>
+        <h2>CertiFier</h2>
 
         <nav className="student-nav">
-          <Link to="/StudentDashboard" className="student-nav-link active">
+          <Link to="/StudentDashboard" className="student-nav-link active" onClick={closeMobileNav}>
             Dashboard
           </Link>
-          <Link to="/verify" className="student-nav-link">
+          <Link to="/verify" className="student-nav-link" onClick={closeMobileNav}>
             Verify
           </Link>
         </nav>

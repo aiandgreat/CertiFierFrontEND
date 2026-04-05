@@ -90,7 +90,6 @@ const RegisterPage = () => {
           </div>
         </div>
       )}
-
       <button className="back-btn" onClick={() => navigate('/')}>Back</button>
 
       <div className="auth-split-wrapper">

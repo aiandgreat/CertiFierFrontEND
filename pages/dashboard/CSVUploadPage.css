@@ -245,3 +245,48 @@
     padding: 26px 18px;
   }
 }
+
+@media (max-width: 480px) {
+  .upload-page-container {
+    padding: 16px;
+    align-items: flex-start;
+  }
+
+  .upload-card {
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+
+  .upload-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .upload-header p {
+    margin-bottom: 22px;
+  }
+
+  .drop-zone {
+    padding: 36px 16px;
+  }
+
+  .upload-actions {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+
+  .success-toast,
+  .error-toast {
+    left: 16px;
+    right: 16px;
+    max-width: none;
+  }
+
+  .back-btn {
+    top: 16px;
+    left: 16px;
+  }
+}

@@ -6,6 +6,14 @@
   background-color: #f8f9fa;
 }
 
+.mobile-menu-toggle {
+  display: none;
+}
+
+.mobile-menu-overlay {
+  display: none;
+}
+
 .admin-sidebar {
   width: 260px;
   background-color: #0D1282; 
@@ -297,8 +305,93 @@
 }
 
 @media (max-width: 768px) {
-  .admin-sidebar { display: none; }
-  .admin-main { padding: 1rem; }
+  .admin-container {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1200;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    box-shadow: none;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+
+  .mobile-menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 999px;
+    background: #ffffff;
+  }
+
+  .mobile-menu-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 900;
+  }
+
+  .admin-sidebar {
+    width: min(280px, 82vw);
+    height: 100vh;
+    min-height: 100vh;
+    padding: 1rem;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .admin-sidebar h2 {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    font-size: 1.2rem;
+  }
+
+  .admin-nav {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .admin-nav-link {
+    padding: 0.8rem 0.9rem;
+  }
+
+  .logout-btn {
+    width: 100%;
+  }
+
+  .admin-main {
+    padding: 1rem;
+    height: auto;
+    min-height: 0;
+  }
 }
 
 .view-file-btn {
@@ -318,6 +411,87 @@
 }
 
 /* DELETE SUCCESS TOAST */
+
+@media (max-width: 1024px) {
+  .admin-stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .table-search-input {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-container {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .admin-main {
+    padding: 1rem;
+    height: auto;
+    min-width: 0;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-table-container {
+    padding: 1rem;
+  }
+
+  .action-buttons {
+    flex-wrap: wrap;
+  }
+
+  .modal-content {
+    width: min(300px, calc(100vw - 32px));
+  }
+
+  .preview-card {
+    max-width: calc(100vw - 24px);
+  }
+
+  .delete-success-toast {
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-main {
+    padding: 1rem;
+    height: auto;
+    min-height: 0;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 6px;
+  }
+
+  .admin-stat-card {
+    padding: 1.2rem;
+  }
+
+  .admin-table-container h3 {
+    font-size: 1rem;
+  }
+
+  .table-search-input {
+    max-width: 100%;
+  }
+}
 .delete-success-toast {
   position: fixed;
   top: 20px;
@@ -442,18 +616,6 @@
 
 .edit-input{
   text-align: center  ;
-}
-
-.Logo-Container {
-    display: flex;
-   flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-.Logo {
-    width: 150px;
-    margin-bottom: 30px;
 }
 
 /* Animation para sa pagpasok ng Toast */

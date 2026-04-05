@@ -86,7 +86,7 @@ const VerifyPage = () => {
 
     return (
         <div className="auth-container">
-            <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+            <button className="back-btn" onClick={() => navigate(-1)}>Back</button>
 
             <div className="auth-split-wrapper glass-effect">
                 <div className="verify-left">

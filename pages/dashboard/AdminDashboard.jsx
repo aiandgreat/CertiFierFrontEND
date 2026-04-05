@@ -3,11 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import JSZip from 'jszip';
 import './AdminDashboard.css';
-import CertiLogo from '../../src/Images/CertiLogo.png';
-
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [stats, setStats] = useState({ totalCerts: 0, totalUsers: 0, uploads: 0 });
   const [recentCerts, setRecentCerts] = useState([]);
   const [templates, setTemplates] = useState([]);
@@ -18,8 +17,8 @@ const AdminDashboard = () => {
   const [editingCert, setEditingCert] = useState(null);
   const [editFormData, setEditFormData] = useState({ full_name: '', course: '', owner: '' });
   const [editingUser, setEditingUser] = useState(null);
-  const [editUserFormData, setEditUserFormData] = useState({
-    first_name: '', last_name: '', email: '', username: '', role: ''
+  const [editUserFormData, setEditUserFormData] = useState({ 
+    first_name: '', last_name: '', email: '', username: '', role: '' 
   });
 
   // UI States
@@ -32,7 +31,7 @@ const AdminDashboard = () => {
   const [downloadingCerts, setDownloadingCerts] = useState(false);
 
   const token = localStorage.getItem('token');
-  const API_BASE = "https://certifierbackend.onrender.com";
+  const API_BASE = "http://127.0.0.1:8000";
 
   useEffect(() => {
     fetchData();
@@ -133,7 +132,7 @@ const AdminDashboard = () => {
 
   const handleDelete = (id, type) => {
     let url = `${API_BASE}/api/${type === 'cert' ? 'certificates' : type + 's'}/${id}/`;
-
+    
     setModal({
       show: true,
       title: 'Confirm Delete',
@@ -148,6 +147,8 @@ const AdminDashboard = () => {
       }
     });
   };
+
+  const closeMobileNav = () => setIsMobileNavOpen(false);
 
   if (loading) return <div className="loading-screen">Loading Portal...</div>;
 
@@ -236,7 +237,7 @@ const AdminDashboard = () => {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(fileURL);
-
+      
       showToast(`Downloaded ${selectedCerts.size} certificate(s) as zip`);
       setSelectedCerts(new Set());
     } catch (error) {
@@ -249,22 +250,36 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-container">
+      <button
+        className="mobile-menu-toggle"
+        type="button"
+        onClick={() => setIsMobileNavOpen((open) => !open)}
+        aria-label="Toggle navigation menu"
+        aria-expanded={isMobileNavOpen}
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+
+      {isMobileNavOpen && (
+        <div className="mobile-menu-overlay" onClick={closeMobileNav} />
+      )}
+
       {toast.show && (
         <div className="delete-success-toast">
-          <span className="toast-icon"> </span>
+          <span className="toast-icon">✅</span>
           <p>{toast.message}</p>
         </div>
       )}
 
-      <aside className="admin-sidebar">
-        <div className='Logo-Container'>
-          <img className='Logo' src={CertiLogo} alt="Certifier Logo" />
-        </div>
+      <aside className={`admin-sidebar ${isMobileNavOpen ? 'open' : ''}`}>
+        <h2>CertiFier</h2>
         <nav className="admin-nav">
-          <Link to="/AdminDashboard" className="admin-nav-link active">Overview</Link>
-          <Link to="/UploadTemplate" className="admin-nav-link">Templates</Link>
-          <Link to="/CSVUpload" className="admin-nav-link">Generate Certificate</Link>
-          <Link to="/verify" className="admin-nav-link">Verify Tool</Link>
+          <Link to="/AdminDashboard" className="admin-nav-link active" onClick={closeMobileNav}>Overview</Link>
+          <Link to="/UploadTemplate" className="admin-nav-link" onClick={closeMobileNav}>Templates</Link>
+          <Link to="/CSVUpload" className="admin-nav-link" onClick={closeMobileNav}>Generate Certificate</Link>
+          <Link to="/verify" className="admin-nav-link" onClick={closeMobileNav}>Verify Tool</Link>
         </nav>
         <button className="logout-btn" onClick={() => { localStorage.clear(); navigate('/login'); }}>Logout</button>
       </aside>
@@ -296,9 +311,9 @@ const AdminDashboard = () => {
               <tbody>
                 {users.filter(u => (u.first_name + ' ' + u.last_name).toLowerCase().includes(userSearch.toLowerCase())).map(user => (
                   <tr key={user.id}>
-                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.first_name} onChange={e => setEditUserFormData({ ...editUserFormData, first_name: e.target.value })} /> : user.first_name}</td>
-                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.last_name} onChange={e => setEditUserFormData({ ...editUserFormData, last_name: e.target.value })} /> : user.last_name}</td>
-                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.email} onChange={e => setEditUserFormData({ ...editUserFormData, email: e.target.value })} /> : user.email}</td>
+                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.first_name} onChange={e => setEditUserFormData({...editUserFormData, first_name: e.target.value})} /> : user.first_name}</td>
+                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.last_name} onChange={e => setEditUserFormData({...editUserFormData, last_name: e.target.value})} /> : user.last_name}</td>
+                    <td>{editingUser === user.id ? <input className="edit-input" value={editUserFormData.email} onChange={e => setEditUserFormData({...editUserFormData, email: e.target.value})} /> : user.email}</td>
                     <td><span className={`badge ${user.role === 'admin' ? 'invalid' : 'valid'}`}>{user.role?.toUpperCase()}</span></td>
                     <td>
                       <div className="action-buttons">
@@ -306,7 +321,7 @@ const AdminDashboard = () => {
                           <><button className="save-btn" onClick={() => handleSaveUserEdit(user.id)}>Save</button><button className="cancel-btn" onClick={() => setEditingUser(null)}>Cancel</button></>
                         ) : (
                           <><button className="edit-btn" onClick={() => { setEditingUser(user.id); setEditUserFormData({ first_name: user.first_name, last_name: user.last_name, email: user.email, username: user.username, role: user.role }); }}>Edit</button>
-                            {user.role !== 'admin' && <button className="delete-btn" onClick={() => handleDelete(user.id, 'user')}>Delete</button>}</>
+                          {user.role !== 'admin' && <button className="delete-btn" onClick={() => handleDelete(user.id, 'user')}>Delete</button>}</>
                         )}
                       </div>
                     </td>
@@ -327,18 +342,9 @@ const AdminDashboard = () => {
           ) : (
             <div className="templates-grid">
               {templates.filter(t => t.name.toLowerCase().includes(templateSearch.toLowerCase())).map(template => (
-                console.log("TEMPLATE:", template),
-                console.log("BACKGROUND:", template.background),
                 <div key={template.id} className="template-card">
                   <div className="template-preview">
-                    <img
-                      src={getFullUrl(template.background)}
-                      alt={template.name}
-                      onError={(e) => {
-                        console.log("FAILED IMAGE:", template.background);
-                        e.target.src = "https://dummyimage.com/200x140/cccccc/000000&text=No+Image";
-                      }}
-                    />
+                    <img src={getFullUrl(template.background)} alt={template.name} onError={(e) => e.target.src = "https://via.placeholder.com/200x140?text=Error+Loading"} />
                   </div>
                   <div className="template-info">
                     <h4>{template.name}</h4>

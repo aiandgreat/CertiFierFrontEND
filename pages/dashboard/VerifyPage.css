@@ -45,6 +45,11 @@
 
 .Logo { width: 80px; }
 
+/* Make logo slightly larger on wider screens while keeping current mobile size */
+@media (min-width: 1200px) {
+    .Logo { width: 100px; }
+}
+
 .verify-left h1 {
     color: #F0DE36;
     font-size: 2rem;
