@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './StudentDashboard.css';
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "https://certifierbackend.onrender.com";
 const ITEMS_PER_PAGE = 10;
 
 const StudentDashboard = () => {

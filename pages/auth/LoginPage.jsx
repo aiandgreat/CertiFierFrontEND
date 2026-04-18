@@ -5,7 +5,7 @@ import './auth.css';
 import CertiLogo from '../../src/Images/CertiLogo.png';
 
 const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
-const API_BASE = 'http://127.0.0.1:8000';
+const API_BASE = 'https://certifierbackend.onrender.com';
 
 const LoginPage = () => {
   const navigate = useNavigate();

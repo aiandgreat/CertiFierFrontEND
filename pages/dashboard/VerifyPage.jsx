@@ -5,8 +5,7 @@ import jsQR from 'jsqr';
 import './VerifyPage.css';
 import CertiLogo from '../../src/Images/CertiLogo.png';
 
-// I-define ang Base URL para iwas error sa typos
-const API_BASE = 'http://127.0.0.1:8000';
+const API_BASE = 'https://certifierbackend.onrender.com';
 
 const VerifyPage = () => {
     const navigate = useNavigate();
