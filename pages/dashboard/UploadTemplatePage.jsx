@@ -6,8 +6,10 @@ import './UploadTemplatePage.css';
 const PLACEHOLDER_OPTIONS = [
   { key: 'full_name', label: 'Full Name' },
   { key: 'course', label: 'Course' },
+  { key: 'certificate_id', label: 'Certificate ID' },
   { key: 'issued_by', label: 'Issued By' },
-  { key: 'date_issued', label: 'Date Issued' }
+  { key: 'date_issued', label: 'Date Issued' },
+  { key: 'qr_code', label: 'QR Code' }
 ];
 
 const DEFAULT_MARKER_STYLE = {
@@ -196,7 +198,7 @@ const UploadTemplatePage = () => {
     formData.append('placeholders', JSON.stringify({ version: 1, markers: payloadMarkers }));
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('https://certifierbackend.onrender.com/api/templates/', formData, {
+      const response = await axios.post('http://127.0.0.1:8000/api/templates/', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.status === 201 || response.status === 200) {
@@ -317,9 +319,9 @@ const UploadTemplatePage = () => {
                     value={placeholderStyles[activePlaceholderKey]?.align || 'center'}
                     onChange={(e) => handleStyleChange('align', e.target.value)}
                   >
-                    <option value="left">Left</option>
+                    <option value="left">Right</option>
                     <option value="center">Center</option>
-                    <option value="right">Right</option>
+                    <option value="right">Left</option>
                   </select>
                 </label>
               </div>

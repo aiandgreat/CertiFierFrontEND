@@ -4,8 +4,9 @@ import axios from 'axios';
 import './auth.css';
 import CertiLogo from '../../src/Images/CertiLogo.png';
 
+
 const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
-const API_BASE = 'https://certifierbackend.onrender.com';
+const API_BASE = 'http://127.0.0.1:8000';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -19,12 +20,11 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
-  
 
   const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
 
   const handleGoogleSignup = () => {
-    const returnTo = `${window.location.origin}/#/login?from=register`;
+    const returnTo = `${window.location.origin}/login`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
   };
@@ -36,6 +36,7 @@ const RegisterPage = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    // Client-side validation
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
       return;
@@ -50,20 +51,24 @@ const RegisterPage = () => {
     setError('');
 
     try {
-      await axios.post(`${API_BASE}/api/auth/register/`, {
+      // Sending data that matches your Django view requirements
+      await axios.post('http://127.0.0.1:8000/api/auth/register/', {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
         password: formData.password,
-        role: 'student'
+        role: 'student' // Default role
       });
 
       setShowSuccess(true);
 
-      // Clear URL to prevent loops if user refreshes
-      window.history.replaceState({}, document.title, '/register');
+      // Redirect to login after success
+      setTimeout(() => {
+        navigate('/login');
+      }, 2500);
 
     } catch (err) {
+      // Capture the specific error message from Django
       const errorDetail = err.response?.data?.error || err.response?.data?.detail || "Registration failed.";
       setError(errorDetail);
     } finally {
@@ -73,26 +78,23 @@ const RegisterPage = () => {
 
   return (
     <div className="auth-container">
-
-      {/* ✅ SUCCESS MODAL */}
+      {/* SUCCESS TOAST */}
       {showSuccess && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-icon">✅</div>
-            <h2>Account Created!</h2>
-            <p>Your account has been successfully registered.</p>
-            <button
-              className="modal-btn"
-              onClick={() => navigate('/login')}
-            >
-              Go to Login
-            </button>
+        <div className="success-toast">
+          <div className="toast-content">
+            <div className="toast-text">
+              <strong>Account Created!</strong>
+              <p>Redirecting to login page...</p>
+            </div>
           </div>
+          <div className="toast-progress"></div>
         </div>
       )}
-      <button className="back-btn" onClick={() => navigate('/')}>Back</button>
+
+      <button className="back-btn" onClick={() => navigate('/HomePage')}>Back</button>
 
       <div className="auth-split-wrapper">
+        {/* LEFT SIDE: Info Section */}
         <div className="auth-info-section register-theme">
           <div className="info-content">
             <div className='LogoLoginContainer'>
@@ -101,13 +103,14 @@ const RegisterPage = () => {
             <h1>Join Us Today</h1>
             <p>Start organizing your certificates and credentials in one secure location.</p>
             <div className="info-graphic">
-               <span>✓ Free Account</span>
-               <span>✓ EdDSA</span>
-               <span>✓ Data Privacy</span>
+              <span>✓ Free Account</span>
+              <span>✓ EdDSA</span>
+              <span>✓ Data Privacy</span>
             </div>
           </div>
         </div>
 
+        {/* RIGHT SIDE: Register Form */}
         <div className="auth-form-section">
           <div className="auth-card">
             <div className="auth-header">
@@ -151,7 +154,7 @@ const RegisterPage = () => {
                   placeholder="name@ua.edu.ph"
                   value={formData.email}
                   onChange={handleChange}
-                  pattern="^[A-Za-z0-9._%+\-]+@ua\.edu\.ph$"
+                  pattern="^[A-Za-z0-9._%+-]+@ua\\.edu\\.ph$"
                   title="Use your school email ending with @ua.edu.ph"
                   required
                 />

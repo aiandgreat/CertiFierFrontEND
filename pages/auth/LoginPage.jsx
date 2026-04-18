@@ -1,102 +1,68 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './auth.css';
+import './auth.css'; 
 import CertiLogo from '../../src/Images/CertiLogo.png';
 
 const SCHOOL_EMAIL_DOMAIN = '@ua.edu.ph';
-const API_BASE = 'https://certifierbackend.onrender.com';
-
-const getOAuthParams = () => {
-  const normal = new URLSearchParams(window.location.search);
-  if (normal.get('access')) return normal;
-
-  const hash = window.location.hash || '';
-  const qIndex = hash.indexOf('?');
-  if (qIndex >= 0) {
-    return new URLSearchParams(hash.slice(qIndex + 1));
-  }
-  return new URLSearchParams();
-};
+const API_BASE = 'http://127.0.0.1:8000';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
-  const [isFromRegister, setIsFromRegister] = useState(false);
 
   const isSchoolEmail = (value) => value.trim().toLowerCase().endsWith(SCHOOL_EMAIL_DOMAIN);
 
   const redirectByRole = (role) => {
-    const userRole = role || localStorage.getItem('user_role');
-
-    if (userRole === 'admin') {
-      navigate('/AdminDashboard', { replace: true });
-    } else {
-      navigate('/StudentDashboard', { replace: true });
+    if (role === 'admin') {
+      navigate('/AdminDashboard');
+      return;
     }
+    navigate('/StudentDashboard');
   };
 
   const handleGoogleLogin = () => {
-    const returnTo = `${window.location.origin}/#/login`;
+    const returnTo = `${window.location.origin}/login`;
     const googleUrl = `${API_BASE}/api/auth/google/login/?return_to=${encodeURIComponent(returnTo)}&hd=ua.edu.ph`;
     window.location.href = googleUrl;
   };
 
   useEffect(() => {
-    setIsFromRegister(false);
-    const params = getOAuthParams();
+    const params = new URLSearchParams(location.search);
     const access = params.get('access');
     const role = params.get('role');
     const fullName = params.get('full_name');
     const authError = params.get('error');
-    const fromReg = params.get('from') === 'register';
 
     if (authError) {
       setError(authError);
       setShowErrorToast(true);
       setTimeout(() => setShowErrorToast(false), 4000);
-      window.history.replaceState({}, document.title, `${window.location.origin}/#/login`);
       return;
     }
 
-    if (!access) return;
+    if (!access || !role) return;
 
-    setIsFromRegister(fromReg);
-
-    localStorage.setItem('access', access);
     localStorage.setItem('token', access);
-    if (role) {
-      localStorage.setItem('role', role);
-      localStorage.setItem('user_role', role);
-    }
-    if (fullName) {
-      localStorage.setItem('full_name', fullName);
-      localStorage.setItem('user_name', fullName);
-    }
-
+    localStorage.setItem('user_role', role);
+    localStorage.setItem('user_name', fullName || 'User');
     setShowSuccessToast(true);
 
-    // Clear OAuth params without triggering a router navigation rerender loop.
-    window.history.replaceState({}, document.title, `${window.location.origin}/#/login`);
-
-    if (fromReg) {
-      return;
-    }
-
-    const timer = setTimeout(() => redirectByRole(), 1200);
-    return () => clearTimeout(timer);
-  }, [navigate]);
+    // Remove sensitive query params from URL before redirect.
+    window.history.replaceState({}, document.title, '/login');
+    setTimeout(() => redirectByRole(role), 1200);
+  }, [location.search, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setShowErrorToast(false);
-    setIsFromRegister(false);
 
     if (!isSchoolEmail(email)) {
       setError('Only @ua.edu.ph email addresses are allowed.');
@@ -109,20 +75,18 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(`${API_BASE}/api/auth/login/`, {
-        email: email,
+        email: email, 
         password: password
       });
 
       const { access, role, full_name } = response.data;
-      localStorage.setItem('access', access);
       localStorage.setItem('token', access);
-      localStorage.setItem('role', role);
       localStorage.setItem('user_role', role);
-      localStorage.setItem('full_name', full_name);
       localStorage.setItem('user_name', full_name);
 
       setShowSuccessToast(true);
-      setTimeout(() => redirectByRole(), 2000);
+
+      setTimeout(() => redirectByRole(role), 2000);
 
     } catch (err) {
       const errorMsg = err.response?.data?.detail || "Invalid email or password.";
@@ -136,16 +100,13 @@ const LoginPage = () => {
 
   return (
     <div className="auth-container">
+      {/* TOAST NOTIFICATIONS */}
       {showSuccessToast && (
         <div className="success-toast">
           <div className="toast-content">
             <div className="toast-text">
-              <strong>{isFromRegister ? "Registration Successful!" : "Login Successful!"}</strong>
-              <p>
-                {isFromRegister
-                  ? `Welcome to Certifier, ${localStorage.getItem('user_name') || 'User'}!`
-                  : `Welcome back, ${localStorage.getItem('user_name') || 'User'}!`}
-              </p>
+              <strong>Login Successful!</strong>
+              <p>Welcome back, {localStorage.getItem('user_name') || 'User'}!</p>
             </div>
           </div>
           <div className="toast-progress"></div>
@@ -164,23 +125,25 @@ const LoginPage = () => {
         </div>
       )}
 
-      <button className="back-btn" onClick={() => navigate('/')}>Back</button>
+      <button className="back-btn" onClick={() => navigate('/HomePage')}>Back</button>
 
       <div className="auth-split-wrapper">
+        {/* LEFT SIDE: System Description */}
         <div className="auth-info-section">
           <div className="info-content">
             <div className='LogoLoginContainer'>
-              <img className='LogoLogin' src={CertiLogo} alt="Certifier Logo" />
+            <img className = 'LogoLogin' src={CertiLogo} alt="Certifier Logo" />
             </div>
             <p>The fastest and most secure way to manage your digital certificates and academic credentials.</p>
             <div className="info-graphic">
-              <span>✓ Verified</span>
-              <span>✓ Secure</span>
-              <span>✓ Accessible</span>
+               <span>✓ Verified</span>
+               <span>✓ Secure</span>
+               <span>✓ Accessible</span>
             </div>
           </div>
         </div>
 
+        {/* RIGHT SIDE: Login Form */}
         <div className="auth-form-section">
           <div className="auth-card">
             <div className="auth-header">
@@ -191,26 +154,26 @@ const LoginPage = () => {
             <form className="auth-form" onSubmit={handleLogin}>
               <div className="form-group">
                 <label>Email Address</label>
-                <input
-                  type="email"
-                  placeholder="name@ua.edu.ph"
+                <input 
+                  type="email" 
+                  placeholder="name@ua.edu.ph" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  pattern="^[A-Za-z0-9._%+\-]+@ua\.edu\.ph$"
+                  pattern="^[A-Za-z0-9._%+-]+@ua\\.edu\\.ph$"
                   title="Use your school email ending with @ua.edu.ph"
-                  required
+                  required 
                 />
                 <small className="input-hint">Use your UA school email (@ua.edu.ph).</small>
               </div>
 
               <div className="form-group">
                 <label>Password</label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
+                <input 
+                  type="password" 
+                  placeholder="••••••••" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
+                  required 
                 />
               </div>
 

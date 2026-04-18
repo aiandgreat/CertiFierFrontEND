@@ -248,13 +248,13 @@ html, body {
 
 @media (max-width: 480px) {
   .upload-page-container {
-    padding: 64px 16px 24px;
+    padding: 140px 16px 24px;
   }
 
   .upload-card {
     padding: 24px 16px;
     border-radius: 18px;
-    margin-top: 10px;
+    margin-top: 40px;
     margin-bottom: 24px;
   }
 
