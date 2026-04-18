@@ -285,7 +285,7 @@ const VerifyPage = () => {
                     <div className="result-container">
                         {!result && !error && (
                             <div className="empty-state">
-s                                <p>Waiting for verification...</p>
+                                <p>Waiting for verification...</p>
                                 <span>Results will appear here.</span>
                             </div>
                         )}
